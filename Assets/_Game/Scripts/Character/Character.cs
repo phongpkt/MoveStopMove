@@ -11,7 +11,9 @@ public class Character : MonoBehaviour
     public float horizontal;
     public float vertical;
     public float speed = 10;
+    public float attackRange;
 
+    public bool isMoving;
     private string currentAnim;
     public virtual void Moving()
     {
@@ -25,9 +27,16 @@ public class Character : MonoBehaviour
     {
         if (currentAnim != animName)
         {
-            animator.ResetTrigger(currentAnim);
+            animator.SetBool(currentAnim, false);
             currentAnim = animName;
-            animator.SetTrigger(currentAnim);
+            animator.SetBool(currentAnim, true);
+        }
+    }
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Enemy") && isMoving == false)
+        {
+            ChangeAnim(Constants.ANIM_ATTACK);
         }
     }
 }

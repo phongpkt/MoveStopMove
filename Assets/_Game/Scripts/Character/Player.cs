@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Player : Character
@@ -27,10 +28,13 @@ public class Player : Character
                 Quaternion rotate = Quaternion.LookRotation(lookDirection, Vector3.up);
                 transform.rotation = rotate;
             }
+            isMoving = true;
             ChangeAnim(Constants.ANIM_RUN);
         }
         if (Input.GetMouseButtonUp(0))
         {
+            isMoving = false;
+            rb.velocity = Vector3.zero;
             ChangeAnim(Constants.ANIM_IDLE);
         }
     }
