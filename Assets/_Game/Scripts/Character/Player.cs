@@ -11,6 +11,25 @@ public class Player : Character
     private void Update()
     {
         Moving();
+        Attack();
+        Die();
+    }
+    public override void Attack()
+    {
+        if (isAttack)
+        {
+            ChangeAnim(Constants.ANIM_ATTACK);
+            //shoot projectile
+            //Weapons weapon = GameManager.Instance.Pool.GetObject(weaponType).GetComponent<Weapons>();
+
+        }
+    }
+    public override void Die()
+    {
+        if(isHit) 
+        {
+            ChangeAnim(Constants.ANIM_DEAD);
+        }
     }
     public override void Moving()
     {

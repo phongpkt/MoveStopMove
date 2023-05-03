@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    [SerializeField] Weapons weapon;
     public GameObject player;
     public Animator animator;
     public Rigidbody rb;
@@ -14,12 +16,18 @@ public class Character : MonoBehaviour
     public float attackRange;
 
     public bool isMoving;
+    public bool isAttack;
+    public bool isHit;
     private string currentAnim;
     public virtual void Moving()
     {
 
     }
     public virtual void Attack()
+    {
+
+    }
+    public virtual void Die()
     {
 
     }
@@ -30,13 +38,6 @@ public class Character : MonoBehaviour
             animator.SetBool(currentAnim, false);
             currentAnim = animName;
             animator.SetBool(currentAnim, true);
-        }
-    }
-    private void OnTriggerEnter(Collider col)
-    {
-        if (col.CompareTag("Enemy") && isMoving == false)
-        {
-            ChangeAnim(Constants.ANIM_ATTACK);
         }
     }
 }

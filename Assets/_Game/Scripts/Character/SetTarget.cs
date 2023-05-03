@@ -5,21 +5,29 @@ using UnityEngine;
 
 public class SetTarget : MonoBehaviour
 {
-    private GameObject target;
-    private List<GameObject> setTarget = new List<GameObject>();
+    public Player player;
+    public Bot enemy;
+    public Queue<Bot> targets = new Queue<Bot>();
+    
+    //private void Update()
+    //{
+    //    Debug.Log(enemy);
+    //}
     private void OnTriggerEnter(Collider col)
     {
         if (col.CompareTag("Enemy"))
         {
-            target = col.GetComponent<GameObject>();
-            setTarget.Add(target);
+            enemy = col.GetComponent<Bot>();
+            targets.Enqueue(enemy);
+            player.isAttack = true;
         }
     }
     private void OnTriggerExit(Collider col)
     {
         if (col.CompareTag("Enemy"))
         {
-            target = null;
+            enemy = null;
+            player.isAttack = false;
         }
     }
 }

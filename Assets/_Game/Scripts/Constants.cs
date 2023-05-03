@@ -6,6 +6,9 @@ public class Constants
 {
     public const string ANIM_RUN = "IsRun";
     public const string ANIM_IDLE = "IsIdle";
+    public const string ANIM_DEAD = "IsDead";
     public const string ANIM_ATTACK = "IsAttack";
+    public const string ANIM_ULTI = "IsUlti";
+    public const string ANIM_DANCE = "IsDance";
 
 }
