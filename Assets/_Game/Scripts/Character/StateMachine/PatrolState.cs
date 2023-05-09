@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PatrolState : MonoBehaviour
+public class PatrolState : IState
 {
-    // Start is called before the first frame update
-    void Start()
+    public void OnEnter(Character character)
     {
-        
+        character.ChangeAnim(Constants.ANIM_RUN);
     }
-
-    // Update is called once per frame
-    void Update()
+    public void OnExecute(Character character)
     {
-        
+
+    }
+    public void OnExit(Character character)
+    {
+        character.ChangeAnim(Constants.ANIM_IDLE);
+        character.ChangeAnim(Constants.ANIM_ATTACK);
     }
 }

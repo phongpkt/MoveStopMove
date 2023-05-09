@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackState : MonoBehaviour
+public class AttackState : IState
 {
-    // Start is called before the first frame update
-    void Start()
+    public void OnEnter(Character character)
     {
-        
+        character.ChangeAnim(Constants.ANIM_ATTACK);
     }
-
-    // Update is called once per frame
-    void Update()
+    public void OnExecute(Character character)
     {
-        
+
+    }
+    public void OnExit(Character character)
+    {
+
     }
 }

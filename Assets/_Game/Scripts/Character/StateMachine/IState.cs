@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IState<T>
+public interface IState
 {
-    void OnEnter(T t);
-    void OnExecute (T t);
-    void OnExit(T t);
+    void OnEnter(Character character);
+    void OnExecute(Character character);
+    void OnExit(Character character);
 }
