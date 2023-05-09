@@ -81,7 +81,7 @@ public class Character : MonoBehaviour
     //===========Die==============
     public virtual void Die()
     {
-        ChangeAnim(Constants.ANIM_DEAD);
+        ChangeState(AttackState);
     }
 
     //===========Animation==============
