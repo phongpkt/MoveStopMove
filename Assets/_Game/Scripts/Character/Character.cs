@@ -31,8 +31,13 @@ public class Character : MonoBehaviour
 
     //Animation
     public Animator animator;
-    protected IState currentState;
     private string currentAnim;
+    
+    //StateMachine
+    protected IState currentState;
+    public IdleState IdleState = new();
+    public PatrolState PatrolState = new();
+    public AttackState AttackState = new();
 
     public virtual void OnEnable()
     {
@@ -43,11 +48,11 @@ public class Character : MonoBehaviour
         size = 1f;
         speed = 10f;
         BaseAttackRange = 5f;
-        ChangeAnim(Constants.ANIM_IDLE);
+        ChangeState(IdleState);
     }
     public virtual void Update()
     {
-
+        currentState.OnExecute(this);
     }
     //===========Moving==============
     public virtual void Moving() { }
@@ -61,30 +66,22 @@ public class Character : MonoBehaviour
     //===========Attack==============
     public virtual void Attack()
     {
-        Debug.Log(3);
-        if (isAttack)
-        {
-            TargetDirection = target.transform.position - transform.position;
-            transform.LookAt(target.transform.position);
-            //ChangeAnim(Constants.ANIM_ATTACK);
-            ChangeState(new AttackState());
-            weaponHolder.SetActive(false);
-            weapon.Shoot(TargetDirection);
-        }
+        TargetDirection = target.transform.position - transform.position;
+        transform.LookAt(target.transform.position);
+        ChangeState(AttackState);
+        weaponHolder.SetActive(false);
+        weapon.Shoot(TargetDirection);
     }
     public virtual void StopAttack()
     {
-        isAttack = false; 
         weaponHolder.SetActive(true);
+        ChangeState(IdleState);
     }
 
     //===========Die==============
     public virtual void Die()
     {
-        if(isHit)
-        {
-            ChangeAnim(Constants.ANIM_DEAD);
-        }
+        ChangeAnim(Constants.ANIM_DEAD);
     }
 
     //===========Animation==============
@@ -97,6 +94,7 @@ public class Character : MonoBehaviour
             animator.SetTrigger(currentAnim);
         }
     }
+    //===========States==============
     public virtual void ChangeState(IState state)
     {
         if (currentState == state)

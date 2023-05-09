@@ -18,6 +18,10 @@ public class Player : Character
     {
         base.Attack();
     }
+    public override void StopAttack()
+    {
+        base.StopAttack();
+    }
     public override void Moving()
     {
         horizontal = joystick.Horizontal;

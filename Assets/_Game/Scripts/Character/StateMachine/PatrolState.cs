@@ -10,7 +10,10 @@ public class PatrolState : IState
     }
     public void OnExecute(Character character)
     {
-
+        if (Input.GetMouseButtonUp(0))
+        {
+            character.ChangeState(character.IdleState);
+        }
     }
     public void OnExit(Character character)
     {
