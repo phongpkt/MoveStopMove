@@ -13,7 +13,6 @@ public class PatrolState : IState
     {
         character.Patrol();
     }
-
     public void OnExit(Character character)
     {
         character.StopPatrol();

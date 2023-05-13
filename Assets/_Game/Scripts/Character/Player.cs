@@ -9,10 +9,6 @@ public class Player : Character
     private float horizontal;
     private float vertical;
     private Vector3 direction;
-    public override void CheckAroundCharacters()
-    {
-        base.CheckAroundCharacters();
-    }
     private void FixedUpdate()
     {
         Moving();
@@ -21,11 +17,10 @@ public class Player : Character
     {
         horizontal = joystick.Horizontal;
         vertical = joystick.Vertical;
-        if(horizontal != 0 || vertical != 0)
+        direction = (Vector3.forward * vertical + Vector3.right * horizontal) * speed;
+        if(direction.magnitude != 0)
         {
-            direction = (Vector3.forward * vertical + Vector3.right * horizontal) * speed;
             rb.velocity = direction;
-
             Vector3 lookDirection = direction;
             if (Mathf.Abs(lookDirection.magnitude) > 0.01f)
             {

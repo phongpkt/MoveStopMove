@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : GameUnit
 {
-    [SerializeField] private float range;
+    private float range;
     float speed = 3f;
     public Rigidbody rb;
     private void FixedUpdate()
@@ -18,12 +18,13 @@ public class Projectile : GameUnit
             range -= speed * Time.deltaTime;
         }
     }
-    public void OnInit(float range, Vector3 direction)
+    public void OnInit(Character onwer, Vector3 direction)
     {
         direction.y = 0;
-        this.range = range;
+        this.range = onwer.baseAttackRange;
         rb.velocity = direction * speed;
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Character"))

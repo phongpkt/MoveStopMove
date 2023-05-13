@@ -25,7 +25,7 @@ public class Character : GameUnit
     public float size;
     public float speed;
     public float attackIntervalTimer;
-    [HideInInspector] public float attackInterval;
+    public float attackInterval;
     [HideInInspector] public float baseAttackRange;
 
     //Character action bool
@@ -40,6 +40,7 @@ public class Character : GameUnit
     protected IState currentState;
     public IdleState IdleState = new();
     public RunState RunState = new();
+    public PatrolState PatrolState = new();
     public AttackState AttackState = new();
     public DeadState DeadState = new();
 
@@ -54,6 +55,7 @@ public class Character : GameUnit
         speed = 10f;
         baseAttackRange = 1f;
         attackInterval = 2f;
+        attackIntervalTimer = attackInterval;
         //attackRangeCollider.radius = attackRange;
         ChangeState(IdleState);
     }
@@ -68,8 +70,9 @@ public class Character : GameUnit
     //===========Moving==============
     public virtual void Moving() { }
     public virtual void Patrol() { }
-    public virtual void FindDirection() { }
+    public virtual void ResetPatrol() { }
     public virtual void StopPatrol() { }
+    public virtual void FindDirection() { }
 
     //===========Increase Size + Attack range==============
     public virtual void Grow()
@@ -81,7 +84,6 @@ public class Character : GameUnit
     //===========Attack==============
     public virtual void CheckAroundCharacters() 
     {
-        attackIntervalTimer = attackInterval;
         if (Targets.Count != 0)
         {
             currentTarget = Targets[0];
@@ -103,8 +105,7 @@ public class Character : GameUnit
     {
         targetDirection = currentTarget.transform.position - transform.position;
         weaponHolder.SetActive(false);
-        weapon.Fire(targetDirection);
-        isAttack = false;
+        weapon.Shoot(gameObject.GetComponent<Character>(),targetDirection);
     }
     public virtual void ResetAttack()
     {
@@ -121,7 +122,7 @@ public class Character : GameUnit
     public virtual void StopAttack()
     {
         weaponHolder.SetActive(true);
-        currentTarget = null;
+        isAttack = false;
     }
 
     //===========Die==============

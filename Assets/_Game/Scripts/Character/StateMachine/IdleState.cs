@@ -11,7 +11,7 @@ public class IdleState : IState
     }
     public void OnExecute(Character character) 
     {
-
+        character.Moving();
     }
 
     public void OnExit (Character character)

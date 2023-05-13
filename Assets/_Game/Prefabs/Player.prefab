@@ -48,18 +48,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1e27bd7579b9ba4dadbe6d82503a07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poolType: 0
   weaponHolder: {fileID: 6402707816742308988}
-  weapon: {fileID: 1091988937804694163}
+  weapon: {fileID: 0}
   rb: {fileID: 4832712000062185210}
   Targets: []
-  target: {fileID: 0}
+  currentTarget: {fileID: 0}
   attackRangeCollider: {fileID: 5173859607553083729}
   size: 0
   speed: 10
-  attackIntervalCounter: 0
+  attackIntervalTimer: 0
   attackInterval: 0
   baseAttackRange: 0
   isHit: 0
+  isAttack: 0
   animator: {fileID: 7557474459479002697}
   joystick: {fileID: 0}
 --- !u!54 &4832712000062185210
@@ -716,26 +718,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 845542440c931e0469a7b87346a9607b, type: 3}
---- !u!1 &221749447907960832 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7603844570288099840, guid: 845542440c931e0469a7b87346a9607b, type: 3}
-  m_PrefabInstance: {fileID: 7680193908680129024}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1091988937804694163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 221749447907960832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2bf7a2f8da7dd14fb1f0b4670db598c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 5718600722031263827, guid: 754bf11a5ac35e6448d3b8510d78c0a0, type: 3}
-  firePoint: {fileID: 1237151198876749182}
-  owner: {fileID: 4832712000062185211}
 --- !u!4 &221749447907960839 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7603844570288099847, guid: 845542440c931e0469a7b87346a9607b, type: 3}
