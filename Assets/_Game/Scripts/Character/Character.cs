@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
-public class Character : MonoBehaviour
+public class Character : GameUnit
 {
     public GameObject weaponHolder;
     public Weapons weapon;
@@ -12,76 +14,120 @@ public class Character : MonoBehaviour
 
     //Set target
     public List<Character> Targets = new List<Character>();
-    public Character target;
-    private Vector3 TargetDirection;
+    public Character currentTarget;
+    private Vector3 targetDirection;
 
     //Attack range
     public SphereCollider attackRangeCollider;
-    public float AttackRange => BaseAttackRange * size;
+    private float attackRange => baseAttackRange * size;
 
     //Character data
     public float size;
     public float speed;
-    public float BaseAttackRange;
+    public float attackIntervalTimer;
+    [HideInInspector] public float attackInterval;
+    [HideInInspector] public float baseAttackRange;
 
     //Character action bool
-    public bool isMoving;
-    public bool isAttack;
     public bool isHit;
+    public bool isAttack;
 
     //Animation
     public Animator animator;
     private string currentAnim;
-    
+
     //StateMachine
     protected IState currentState;
     public IdleState IdleState = new();
-    public PatrolState PatrolState = new();
+    public RunState RunState = new();
     public AttackState AttackState = new();
+    public DeadState DeadState = new();
+
 
     public virtual void OnEnable()
     {
         OnInit();
     }
-    public virtual void OnInit()
+    public override void OnInit()
     {
         size = 1f;
         speed = 10f;
-        BaseAttackRange = 5f;
+        baseAttackRange = 1f;
+        attackInterval = 2f;
+        //attackRangeCollider.radius = attackRange;
         ChangeState(IdleState);
     }
+    public override void OnDespawn() { }
     public virtual void Update()
     {
-        currentState.OnExecute(this);
+        if (currentState != null)
+        {
+            currentState.OnExecute(this);
+        }
     }
     //===========Moving==============
     public virtual void Moving() { }
+    public virtual void Patrol() { }
+    public virtual void FindDirection() { }
+    public virtual void StopPatrol() { }
+
     //===========Increase Size + Attack range==============
     public virtual void Grow()
     {
         size += 1;
-        attackRangeCollider.radius = AttackRange;
+        attackRangeCollider.radius = attackRange;
     }
 
     //===========Attack==============
+    public virtual void CheckAroundCharacters() 
+    {
+        attackIntervalTimer = attackInterval;
+        if (Targets.Count != 0)
+        {
+            currentTarget = Targets[0];
+            isAttack = true;
+            ChangeState(AttackState);
+        }
+    }
+    public virtual void LookAtTarget()
+    {
+        if (currentTarget != null)
+        {
+            Vector3 lookDirection = currentTarget.transform.position - transform.position;
+            lookDirection.y = 0f;
+            lookDirection = lookDirection.normalized;
+            transform.rotation = Quaternion.LookRotation(lookDirection);
+        }
+    }
     public virtual void Attack()
     {
-        TargetDirection = target.transform.position - transform.position;
-        transform.LookAt(target.transform.position);
-        ChangeState(AttackState);
+        targetDirection = currentTarget.transform.position - transform.position;
         weaponHolder.SetActive(false);
-        weapon.Shoot(TargetDirection);
+        weapon.Fire(targetDirection);
+        isAttack = false;
+    }
+    public virtual void ResetAttack()
+    {
+        if (isAttack)
+        {
+            attackIntervalTimer -= Time.deltaTime;
+            if (attackIntervalTimer <= 0)
+            {
+                ChangeState(IdleState);
+                attackIntervalTimer = attackInterval;
+            }
+        }
     }
     public virtual void StopAttack()
     {
         weaponHolder.SetActive(true);
-        ChangeState(IdleState);
+        currentTarget = null;
     }
 
     //===========Die==============
     public virtual void Die()
     {
-        ChangeState(AttackState);
+        ChangeState(DeadState);
     }
 
     //===========Animation==============
@@ -94,7 +140,7 @@ public class Character : MonoBehaviour
             animator.SetTrigger(currentAnim);
         }
     }
-    //===========States==============
+    //===========StateController==============
     public virtual void ChangeState(IState state)
     {
         if (currentState == state)
@@ -111,4 +157,5 @@ public class Character : MonoBehaviour
             currentState.OnEnter(this);
         }
     }
+
 }

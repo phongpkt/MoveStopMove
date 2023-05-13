@@ -14,7 +14,6 @@ public class SetTarget : MonoBehaviour
             if (target != Owner)
             {
                 Owner.Targets.Add(target);
-                Owner.Attack();
             }
         }
     }

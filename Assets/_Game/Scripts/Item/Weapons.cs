@@ -8,9 +8,9 @@ public class Weapons : MonoBehaviour
     public Transform firePoint;
 
     public Character owner;
-    public void Shoot(Vector3 direction)
+    public void Fire(Vector3 direction)
     {
         Projectile projectile = SimplePool.Spawn<Projectile>(arrowPrefab, firePoint.position, firePoint.rotation);
-        projectile.OnInit(owner.BaseAttackRange, direction);
+        projectile.OnInit(owner.baseAttackRange, direction);
     }
 }

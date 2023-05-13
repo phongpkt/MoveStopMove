@@ -9,18 +9,13 @@ public class Player : Character
     private float horizontal;
     private float vertical;
     private Vector3 direction;
-
+    public override void CheckAroundCharacters()
+    {
+        base.CheckAroundCharacters();
+    }
     private void FixedUpdate()
     {
         Moving();
-    }
-    public override void Attack()
-    {
-        base.Attack();
-    }
-    public override void StopAttack()
-    {
-        base.StopAttack();
     }
     public override void Moving()
     {
@@ -28,7 +23,6 @@ public class Player : Character
         vertical = joystick.Vertical;
         if(horizontal != 0 || vertical != 0)
         {
-            isMoving = true;
             direction = (Vector3.forward * vertical + Vector3.right * horizontal) * speed;
             rb.velocity = direction;
 
@@ -39,13 +33,12 @@ public class Player : Character
                 Quaternion rotate = Quaternion.LookRotation(lookDirection, Vector3.up);
                 transform.rotation = rotate;
             }
-            ChangeAnim(Constants.ANIM_RUN);
+            ChangeState(RunState);
         }
         else if(!isAttack)
         {
-            isMoving = false;
             rb.velocity = Vector3.zero;
-            ChangeAnim(Constants.ANIM_IDLE);
+            ChangeState(IdleState);
         }
     }
 }
