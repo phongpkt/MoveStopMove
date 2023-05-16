@@ -9,9 +9,28 @@ public class Player : Character
     private float horizontal;
     private float vertical;
     private Vector3 direction;
+
+    public static Character target;
+    public override void Update()
+    {
+        base.Update();
+        if(Targets.Count != 0 )
+        {
+            target = Targets[0];
+        }
+        else
+        {
+            target = null;
+        }
+    }
     private void FixedUpdate()
     {
         Moving();
+    }
+    public override void DespawnWhenDie()
+    {
+        gameObject.SetActive(false);
+        LevelManager.Instance.CharacterDie();
     }
     public override void Moving()
     {

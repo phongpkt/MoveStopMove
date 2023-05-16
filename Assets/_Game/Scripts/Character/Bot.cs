@@ -8,8 +8,7 @@ using static UnityEngine.UI.Image;
 
 public class Bot : Character
 {
-    public GameObject TargetIcon;
-
+    public GameObject targetCircle;
 
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private float sphereRadius = 50f;
@@ -28,14 +27,14 @@ public class Bot : Character
         agent = GetComponent<NavMeshAgent>();
         agent.speed = speed;
         idleTime = UnityEngine.Random.Range(0f, 2f);
+        targetCircle.SetActive(false);
     }
     public override void Update()
     {
         base.Update();
-        //ShowTargetIcon();
+        ShowTargetIcon();
     }
-
-    //===========Patrolling============== *TODO
+    //===========Patrolling==============
     public override void Moving()
     {
         idleTimeCounter += Time.deltaTime;
@@ -49,7 +48,7 @@ public class Bot : Character
     {
         agent.isStopped = false;
         agent.SetDestination(pos);
-        if(!agent.hasPath)
+        if(!agent.hasPath || Targets.Count != 0)
         {
             ChangeState(IdleState);
         }
@@ -68,16 +67,29 @@ public class Bot : Character
     {
         agent.isStopped = true;
     }
-
-    //private void ShowTargetIcon()
-    //{
-    //    if (gameObject == Player.target)
-    //    {
-    //        TargetIcon.SetActive(true);
-    //    }
-    //    else
-    //    {
-    //        TargetIcon.SetActive(false);
-    //    }
-    //}
+    //===========Die==============
+    public override void Die()
+    {
+        base.Die();
+        LevelManager.Instance.CheckNumberOfEnemies();
+    }
+    public override void DespawnWhenDie()
+    {
+        SimplePool.Despawn(this);
+        LevelManager.Instance.enemyCounter.Remove(this);
+        LevelManager.Instance.CharacterDie();
+        LevelManager.Instance.OnFinishGame();
+    }
+    //===========Addition GamePlay==============
+    private void ShowTargetIcon()
+    {
+        if (gameObject.GetComponent<Bot>() == Player.target)
+        {
+            targetCircle.SetActive(true);
+        }
+        else
+        {
+            targetCircle.SetActive(false);
+        }
+    }
 }

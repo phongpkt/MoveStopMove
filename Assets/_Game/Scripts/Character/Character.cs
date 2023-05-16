@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -24,13 +25,13 @@ public class Character : GameUnit
     //Character data
     public float size;
     public float speed;
-    public float attackIntervalTimer;
-    public float attackInterval;
+    [HideInInspector] public float attackIntervalTimer;
+    [HideInInspector] public float attackInterval;
     [HideInInspector] public float baseAttackRange;
 
     //Character action bool
-    public bool isHit;
-    public bool isAttack;
+    [HideInInspector] public bool isHit;
+    [HideInInspector] public bool isAttack;
 
     //Animation
     public Animator animator;
@@ -123,13 +124,28 @@ public class Character : GameUnit
     {
         weaponHolder.SetActive(true);
         isAttack = false;
+        Targets.Remove(currentTarget);
+        currentTarget = null;
     }
-
-    //===========Die==============
-    public virtual void Die()
+    public virtual void Hit()
     {
-        ChangeState(DeadState);
+        isHit = true;
+        if(isHit)
+        {
+            Die();
+        }
     }
+    //===========GameOver==============
+    public virtual void Win() { }
+    
+    public virtual async void Die()
+    {
+        Targets.Clear();
+        ChangeState(DeadState);
+        await Task.Delay(TimeSpan.FromSeconds(1.5));
+        DespawnWhenDie();
+    }
+    public virtual void DespawnWhenDie() { }
 
     //===========Animation==============
     public void ChangeAnim(string animName)

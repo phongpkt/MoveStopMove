@@ -21,15 +21,15 @@ public class Projectile : GameUnit
     public void OnInit(Character onwer, Vector3 direction)
     {
         direction.y = 0;
-        this.range = onwer.baseAttackRange;
+        range = onwer.baseAttackRange;
         rb.velocity = direction * speed;
     }
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Character"))
+        if (other.gameObject.CompareTag("Character"))
         {
             OnDespawn();
+            other.gameObject.GetComponent<Character>().Hit();
         }
     }
     public override void OnDespawn()
