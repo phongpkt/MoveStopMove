@@ -71,7 +71,7 @@ public class Bot : Character
     public override void Die()
     {
         base.Die();
-        LevelManager.Instance.CheckNumberOfEnemies();
+        //LevelManager.Instance.CheckNumberOfEnemies();
     }
     public override void DespawnWhenDie()
     {

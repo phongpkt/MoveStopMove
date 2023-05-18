@@ -11,4 +11,6 @@ public class Constants
     public const string ANIM_ULTI = "IsUlti";
     public const string ANIM_DANCE = "IsDance";
 
+    public const int GOLD_PER_KILL = 10;
+    public const int GOLD_PER_LEVEL = 3;
 }
