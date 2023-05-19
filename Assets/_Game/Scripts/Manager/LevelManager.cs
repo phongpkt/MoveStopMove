@@ -38,11 +38,6 @@ public class LevelManager : Singleton<LevelManager>
     //    OnDespawn();
     //    OnInit();
     //}
-    public void OnDespawn()
-    {
-        SimplePool.CollectAll();
-        enemyCounter.Clear();
-    }
     //public void LoadLevel(int level) 
     //{
     //    if (currentLevel != null)
@@ -59,6 +54,8 @@ public class LevelManager : Singleton<LevelManager>
         if(totalBotAmount == 0)
         {
             GameManager.Instance.gameState = GameState.GameWin;
+            SimplePool.CollectAll();
+            enemyCounter.Clear();
         }
     }
     public void CharacterDie()

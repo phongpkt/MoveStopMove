@@ -15,19 +15,22 @@ public class Character : GameUnit
 
     //Set target
     public List<Character> Targets = new List<Character>();
-    public Character currentTarget;
+    [HideInInspector] public Character currentTarget;
     private Vector3 targetDirection;
 
-    //Attack range
-    public SphereCollider attackRangeCollider;
-    private float attackRange => baseAttackRange * size;
+    //Grow
+    public Transform attackRangeScale;
 
     //Character data
     public float size;
     public float speed;
+    public float attackRange => baseAttackRange * size;
     [HideInInspector] public float attackIntervalTimer;
     [HideInInspector] public float attackInterval;
-    [HideInInspector] public float baseAttackRange;
+    [SerializeField] private int point;
+    private int pointToGrow;
+    private float baseAttackRange;
+
 
     //Character action bool
     [HideInInspector] public bool isHit;
@@ -54,10 +57,12 @@ public class Character : GameUnit
     {
         size = 1f;
         speed = 10f;
-        baseAttackRange = 1f;
+        point = 0;
+        pointToGrow = 5;
+        baseAttackRange = 0.5f;
         attackInterval = 2f;
         attackIntervalTimer = attackInterval;
-        //attackRangeCollider.radius = attackRange;
+        //attackRangeCollider.radius = baseAttackRange;
         ChangeState(IdleState);
     }
     public override void OnDespawn() { }
@@ -76,12 +81,21 @@ public class Character : GameUnit
     public virtual void FindDirection() { }
 
     //===========Increase Size + Attack range==============
+    public virtual void IncreasePoint()
+    {
+        point += 1;
+        if (point >= pointToGrow)
+        {
+            Grow();
+        }
+    }
     public virtual void Grow()
     {
         size += 1;
-        attackRangeCollider.radius = attackRange;
+        gameObject.transform.localScale += new Vector3(0.2f, 0.2f, 0.2f);
+        //attackRangeCollider.radius = attackRange;
+        pointToGrow += 5;
     }
-
     //===========Attack==============
     public virtual void CheckAroundCharacters() 
     {

@@ -77,6 +77,7 @@ public class Bot : Character
     {
         SimplePool.Despawn(this);
         LevelManager.Instance.enemyCounter.Remove(this);
+        LevelManager.Instance.totalBotAmount--;
         LevelManager.Instance.CharacterDie();
         LevelManager.Instance.OnFinishGame();
     }
