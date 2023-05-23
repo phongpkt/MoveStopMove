@@ -9,28 +9,40 @@ using UnityEngine.TextCore.Text;
 
 public class Character : GameUnit
 {
-    public GameObject weaponHolder;
-    public Weapons weapon;
-    public Rigidbody rb;
-
     //Set target
     public List<Character> Targets = new List<Character>();
     [HideInInspector] public Character currentTarget;
     private Vector3 targetDirection;
 
-    //Grow
-    public Transform attackRangeScale;
+    //UI
+    [SerializeField] protected GameObject inGameCanvas;
+    [HideInInspector] public Character currentAttacker;
+    [HideInInspector] public string characterName;
 
     //Character data
+    public Rigidbody rb;
     public float size;
     public float speed;
-    public float attackRange => baseAttackRange * size;
+    public Transform attackRangeScale;
     [HideInInspector] public float attackIntervalTimer;
     [HideInInspector] public float attackInterval;
-    [SerializeField] private int point;
+    public int point;
     private int pointToGrow;
     private float baseAttackRange;
+    public float attackRange => baseAttackRange * size;
 
+    //Weapons
+    public enum Weapon { Arrow, Hammer, Knife, Candy, Boomerang }
+    public Weapon equipedWeapon;
+    [SerializeField] protected GameObject weaponHolder;
+    [SerializeField] protected GameObject arrowInHand;
+    [SerializeField] protected GameObject hammerInHand;
+    [SerializeField] protected GameObject knifeInHand;
+    [SerializeField] protected GameObject candyInHand;
+    [SerializeField] protected GameObject boomerangInHand;
+    protected GameObject currentWeapon;
+    protected GameObject lastWeapon;
+    private int weaponIndex;
 
     //Character action bool
     [HideInInspector] public bool isHit;
@@ -63,6 +75,7 @@ public class Character : GameUnit
         attackInterval = 2f;
         attackIntervalTimer = attackInterval;
         //attackRangeCollider.radius = baseAttackRange;
+        EquipWeapon();
         ChangeState(IdleState);
     }
     public override void OnDespawn() { }
@@ -79,7 +92,39 @@ public class Character : GameUnit
     public virtual void ResetPatrol() { }
     public virtual void StopPatrol() { }
     public virtual void FindDirection() { }
+    //===========Equip + Change Weapon==============
+    public virtual void EquipWeapon()
+    {
+        SwitchWeapon(equipedWeapon);
+    }
 
+    public virtual void SwitchWeapon(Weapon equipedWeapon)
+    {
+        if (currentWeapon != null)
+        {
+            lastWeapon = currentWeapon;
+            lastWeapon.SetActive(false);
+        }
+        switch (equipedWeapon)
+        {
+            case Weapon.Arrow:
+                currentWeapon = arrowInHand;
+                break;
+            case Weapon.Hammer:
+                currentWeapon = hammerInHand;
+                break;
+            case Weapon.Knife:
+                currentWeapon = knifeInHand;
+                break;
+            case Weapon.Candy:
+                currentWeapon = candyInHand;
+                break;
+            case Weapon.Boomerang:
+                currentWeapon = boomerangInHand;
+                break;
+        }
+        currentWeapon.SetActive(true);
+    }
     //===========Increase Size + Attack range==============
     public virtual void IncreasePoint()
     {
@@ -120,7 +165,7 @@ public class Character : GameUnit
     {
         targetDirection = currentTarget.transform.position - transform.position;
         weaponHolder.SetActive(false);
-        weapon.Shoot(gameObject.GetComponent<Character>(),targetDirection);
+        currentWeapon.GetComponent<Weapons>().Shoot(gameObject.GetComponent<Character>(),targetDirection);
     }
     public virtual void ResetAttack()
     {

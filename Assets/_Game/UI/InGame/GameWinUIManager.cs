@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameWinUIManager : MonoBehaviour
 {
+    [SerializeField] private TMP_Text gold;
     // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        
+        gold.SetText("Get: " + GameManager.Instance.goldPerStage.ToString());
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ReturnToMenu()
     {
-        
+        SceneManager.LoadScene(0);
     }
 }

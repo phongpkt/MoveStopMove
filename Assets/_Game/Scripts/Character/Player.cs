@@ -11,6 +11,12 @@ public class Player : Character
     private Vector3 direction;
 
     public static Character target;
+    public override void OnInit()
+    {
+        base.OnInit();
+        equipedWeapon = (Weapon)PlayerPrefs.GetInt("equipedWeapon", 0);
+        characterName = PlayerPrefs.GetString("playerName", "Player");
+    }
     public override void Update()
     {
         base.Update();
