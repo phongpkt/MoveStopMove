@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class Projectile : GameUnit
 {
-    private float range;
-    float speed = 3f;
-    public Rigidbody rb;
-
     private Character _Owner;
+    [SerializeField] private float range;
+    [SerializeField] private float speed;
+    public Rigidbody rb;
     private void FixedUpdate()
     {
-        if (range < 0)
+        if (range < _Owner.baseAttackRange)
         {
             OnDespawn();
         }
@@ -20,11 +19,11 @@ public class Projectile : GameUnit
             range -= speed * Time.deltaTime;
         }
     }
-    public void OnInit(Character owner, Vector3 direction)
+    public void OnInit(Character owner, Vector3 direction, Weapons weapon)
     {
-        direction.y = 0;
         _Owner = owner;
-        range = _Owner.attackRange + 0.2f;
+        range = weapon.range;
+        speed = weapon.speed;
         rb.velocity = direction * speed;
     }
     private void OnTriggerEnter(Collider other)

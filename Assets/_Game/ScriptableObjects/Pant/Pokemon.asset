@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25ddd4bf49adced4c91bde17a68b6c82, type: 3}
+  m_Name: Pokemon
+  m_EditorClassIdentifier: 
+  index: 5
+  icon: {fileID: 21300000, guid: a482b056a7db15c449864b0f6737a4cb, type: 3}
+  material: {fileID: 2100000, guid: 9df3707fc9b5d5c47b52418b5db227b8, type: 2}
+  speedBuff: 0
+  rangeBuff: 0

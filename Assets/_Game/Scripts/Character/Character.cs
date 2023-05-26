@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using static Character;
+using static UnityEditor.Progress;
 
 public class Character : GameUnit
 {
@@ -19,34 +21,38 @@ public class Character : GameUnit
     [HideInInspector] public Character currentAttacker;
     [HideInInspector] public string characterName;
 
+    //Skin
+    [SerializeField] public Transform headPosition;
+    [SerializeField] public Transform backPosition;
+    [SerializeField] public Transform shieldPosition;
+    [SerializeField] public Transform tailPosition;
+    [SerializeField] public SkinnedMeshRenderer pantRenderer;
+    [SerializeField] public SkinnedMeshRenderer skinRenderer;
+
     //Character data
     public Rigidbody rb;
-    public float size;
     public float speed;
     public Transform attackRangeScale;
     [HideInInspector] public float attackIntervalTimer;
     [HideInInspector] public float attackInterval;
-    public int point;
-    private int pointToGrow;
-    private float baseAttackRange;
-    public float attackRange => baseAttackRange * size;
+    [HideInInspector] public int point;
+    [HideInInspector] private int pointToGrow;
+    private Vector3 increaseSize = new Vector3(0.2f, 0.2f, 0.2f);
+    [HideInInspector] public float baseAttackRange;
 
     //Weapons
     public enum Weapon { Arrow, Hammer, Knife, Candy, Boomerang }
     public Weapon equipedWeapon;
+    [SerializeField] protected Transform firePoint;
     [SerializeField] protected GameObject weaponHolder;
-    [SerializeField] protected GameObject arrowInHand;
-    [SerializeField] protected GameObject hammerInHand;
-    [SerializeField] protected GameObject knifeInHand;
-    [SerializeField] protected GameObject candyInHand;
-    [SerializeField] protected GameObject boomerangInHand;
-    protected GameObject currentWeapon;
-    protected GameObject lastWeapon;
-    private int weaponIndex;
+    [SerializeField] protected Weapons[] weaponsList;
+    private int currentWeapon;
+    public GameObject weaponInHand;
 
     //Character action bool
     [HideInInspector] public bool isHit;
     [HideInInspector] public bool isAttack;
+    [HideInInspector] public bool isDead;
 
     //Animation
     public Animator animator;
@@ -59,73 +65,133 @@ public class Character : GameUnit
     public PatrolState PatrolState = new();
     public AttackState AttackState = new();
     public DeadState DeadState = new();
+    public WinState WinState = new();
 
 
     public virtual void OnEnable()
     {
         OnInit();
+        LevelManager.Instance.onCharacterDie += Win;
+    }
+    public virtual void OnDisable()
+    {
+        LevelManager.Instance.onCharacterDie -= Win;
     }
     public override void OnInit()
     {
-        size = 1f;
+        inGameCanvas.SetActive(false);
         speed = 10f;
         point = 0;
         pointToGrow = 5;
         baseAttackRange = 0.5f;
         attackInterval = 2f;
         attackIntervalTimer = attackInterval;
-        //attackRangeCollider.radius = baseAttackRange;
+        currentWeapon = 0;
+        baseAttackRange = attackRangeScale.GetComponent<SphereCollider>().radius;
+        isDead = false;
         EquipWeapon();
         ChangeState(IdleState);
     }
     public override void OnDespawn() { }
     public virtual void Update()
     {
-        if (currentState != null)
+        if (GameManager.Instance.gameState == GameManager.GameState.GamePlay)
         {
-            currentState.OnExecute(this);
+            inGameCanvas.SetActive(true);
+        }
+        if (GameManager.Instance.gameState == GameManager.GameState.GamePlay)
+        {
+            if (currentState != null)
+            {
+                currentState.OnExecute(this);
+            }
         }
     }
     //===========Moving==============
+    #region Patrol + Moving
     public virtual void Moving() { }
     public virtual void Patrol() { }
     public virtual void ResetPatrol() { }
     public virtual void StopPatrol() { }
     public virtual void FindDirection() { }
+    #endregion
     //===========Equip + Change Weapon==============
+    #region Equip + Change Weapon
+    //Need Fix: lam the nao de lay duoc firepoint trong player
     public virtual void EquipWeapon()
     {
         SwitchWeapon(equipedWeapon);
     }
-
+    public virtual void GetWeapon(int index)
+    {
+        for(int i=0; i<weaponsList.Length; i++)
+        {
+            if (weaponsList[i].index == index && weaponsList[i] != null)
+            {
+               
+                weaponInHand = Instantiate(weaponsList[i].model, weaponHolder.transform);
+                WeaponManager weaponManager = weaponInHand.GetComponent<WeaponManager>();
+                weaponManager.firePoint = firePoint;
+            }
+        }
+    }
+    public virtual void RemoveWeapon()
+    {
+        if(weaponInHand != null)
+        {
+            Transform weapon = weaponHolder.transform.GetChild(0);
+            Destroy(weapon.gameObject);
+        }
+    }
     public virtual void SwitchWeapon(Weapon equipedWeapon)
     {
-        if (currentWeapon != null)
-        {
-            lastWeapon = currentWeapon;
-            lastWeapon.SetActive(false);
-        }
         switch (equipedWeapon)
         {
             case Weapon.Arrow:
-                currentWeapon = arrowInHand;
+                currentWeapon = 0;
+                RemoveWeapon();
+                GetWeapon(currentWeapon);
                 break;
             case Weapon.Hammer:
-                currentWeapon = hammerInHand;
+                currentWeapon = 1;
+                RemoveWeapon();
+                GetWeapon(currentWeapon);
                 break;
             case Weapon.Knife:
-                currentWeapon = knifeInHand;
+                currentWeapon = 2;
+                RemoveWeapon();
+                GetWeapon(currentWeapon);
                 break;
             case Weapon.Candy:
-                currentWeapon = candyInHand;
+                currentWeapon = 3;
+                RemoveWeapon();
+                GetWeapon(currentWeapon);
                 break;
             case Weapon.Boomerang:
-                currentWeapon = boomerangInHand;
+                currentWeapon = 4;
+                RemoveWeapon();
+                GetWeapon(currentWeapon);
                 break;
         }
-        currentWeapon.SetActive(true);
     }
+    #endregion
+    //===========Change Clothes==============
+    //#TODO
+    #region Change Clothes
+    public virtual void ChangeClothes()
+    {
+
+    }
+    public virtual void ResetClothes()
+    {
+        Destroy(headPosition.gameObject);
+        Destroy(tailPosition.gameObject);
+        Destroy(shieldPosition.gameObject);
+        Destroy(backPosition.gameObject);
+    }
+    #endregion
     //===========Increase Size + Attack range==============
+    #region Grow
     public virtual void IncreasePoint()
     {
         point += 1;
@@ -136,12 +202,13 @@ public class Character : GameUnit
     }
     public virtual void Grow()
     {
-        size += 1;
-        gameObject.transform.localScale += new Vector3(0.2f, 0.2f, 0.2f);
-        //attackRangeCollider.radius = attackRange;
+        gameObject.transform.localScale += increaseSize;
         pointToGrow += 5;
     }
+    #endregion
+
     //===========Attack==============
+    #region Attack
     public virtual void CheckAroundCharacters() 
     {
         if (Targets.Count != 0)
@@ -165,7 +232,7 @@ public class Character : GameUnit
     {
         targetDirection = currentTarget.transform.position - transform.position;
         weaponHolder.SetActive(false);
-        currentWeapon.GetComponent<Weapons>().Shoot(gameObject.GetComponent<Character>(),targetDirection);
+        weaponInHand.GetComponent<WeaponManager>().Shoot(currentTarget, targetDirection);
     }
     public virtual void ResetAttack()
     {
@@ -194,17 +261,23 @@ public class Character : GameUnit
             Die();
         }
     }
+    #endregion
     //===========GameOver==============
+    #region GameOver
     public virtual void Win() { }
-    
+    #endregion
+    //===========Die==============
+    #region Die
     public virtual async void Die()
     {
+        isDead = true;
         Targets.Clear();
         ChangeState(DeadState);
         await Task.Delay(TimeSpan.FromSeconds(1.5));
         DespawnWhenDie();
     }
     public virtual void DespawnWhenDie() { }
+    #endregion
 
     //===========Animation==============
     public void ChangeAnim(string animName)

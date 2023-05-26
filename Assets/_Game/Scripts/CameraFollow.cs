@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
         menuPosition = new Vector3(0f, 8f, -15f);
         ingamePosition = new Vector3(0f, 20f, -20f);
 
-        menuRotation = Quaternion.Euler(10f, 0f, 0f);
+        menuRotation = Quaternion.Euler(13f, 0f, 0f);
         ingameRotation = Quaternion.Euler(35f, 0f, 0f);
         shopRotation = Quaternion.Euler(12f, 0f, 0f);
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -5,7 +6,9 @@ using UnityEngine;
 
 public class Player : Character
 {
+    [SerializeField] private GameObject _joystickUI;
     [SerializeField] private FloatingJoystick joystick;
+    [SerializeField] private GameObject victoryUI;
     private float horizontal;
     private float vertical;
     private Vector3 direction;
@@ -13,26 +16,46 @@ public class Player : Character
     public static Character target;
     public override void OnInit()
     {
-        base.OnInit();
         equipedWeapon = (Weapon)PlayerPrefs.GetInt("equipedWeapon", 0);
         characterName = PlayerPrefs.GetString("playerName", "Player");
+        base.OnInit();
     }
     public override void Update()
     {
         base.Update();
         if(Targets.Count != 0 )
-        {
             target = Targets[0];
-        }
         else
-        {
             target = null;
-        }
     }
     private void FixedUpdate()
     {
         Moving();
     }
+    public override void Win()
+    {
+        if(GameManager.Instance.gameState == GameManager.GameState.GameWin)
+        {
+            CloseUI();
+            ChangeState(WinState);
+            GameManager.Instance.GetGoldAfterStage();
+            victoryUI.SetActive(true);
+        }
+    }
+    public override void Die()
+    {
+        base.Die();
+        if (isDead)
+        {
+            CloseUI();
+            GameManager.Instance.gameState = GameManager.GameState.GameOver;
+        }
+    }
+    private void CloseUI()
+    {
+        _joystickUI.SetActive(false);
+    }
+
     public override void DespawnWhenDie()
     {
         gameObject.SetActive(false);

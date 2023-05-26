@@ -99,3 +99,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponPrefab: {fileID: 6178736546756631797, guid: b4630edd50f49b742b069a26132f2912, type: 3}
   firePoint: {fileID: 0}
+  _Weapon: {fileID: 11400000, guid: 8c07097f5c1639649a8a3a33907d31b2, type: 2}

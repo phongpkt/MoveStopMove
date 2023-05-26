@@ -11,7 +11,7 @@ public class GameManager : Singleton<GameManager>
     public int totalPlayerGold;
     private void Awake()
     {
-        totalPlayerGold = PlayerPrefs.GetInt("totalPlayerGold", 0);
+        totalPlayerGold = PlayerPrefs.GetInt("totalPlayerGold", 100000);
         goldPerStage = 0;
         gameState = GameState.MainMenu;
     }

@@ -10,7 +10,7 @@ public class WeaponDisplay : MonoBehaviour
     [SerializeField] private TMP_Text weaponEffect;
     [SerializeField] private Transform weaponHolder;
     [SerializeField] private Image weaponImage;
-    public void DisplayWeapons(Weapon _weapon)
+    public void DisplayWeapons(Weapons _weapon)
     {
         weaponName.SetText(_weapon.name);
         weaponImage.sprite = _weapon.icon;
