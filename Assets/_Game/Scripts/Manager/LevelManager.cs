@@ -15,39 +15,9 @@ public class LevelManager : Singleton<LevelManager>
     public List<Bot> enemyCounter = new List<Bot>();
     public int totalBotAmount;
     
-    public List<Level> levels = new List<Level>();
-    private Level currentLevel;
-    private int levelIndex;
-
     private void Awake()
     {
         totalBotAmount = 20;
-    }
-    //private void Start()
-    //{
-    //    LoadLevel(levelIndex);
-    //    OnInit();
-    //}
-    //public void OnInit() 
-    //{
-
-    //}
-    //public void OnRetry()
-    //{
-    //    LoadLevel(levelIndex);
-    //    OnDespawn();
-    //    OnInit();
-    //}
-    //public void LoadLevel(int level) 
-    //{
-    //    if (currentLevel != null)
-    //    {
-    //        Destroy(currentLevel.gameObject);
-    //    }
-    //}
-    public void OnStartGame()
-    {
-        GameManager.Instance.gameState = GameState.GamePlay;
     }
     public void OnFinishGame()
     {

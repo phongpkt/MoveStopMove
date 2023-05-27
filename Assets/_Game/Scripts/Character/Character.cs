@@ -117,7 +117,6 @@ public class Character : GameUnit
     #endregion
     //===========Equip + Change Weapon==============
     #region Equip + Change Weapon
-    //Need Fix: lam the nao de lay duoc firepoint trong player
     public virtual void EquipWeapon()
     {
         SwitchWeapon(equipedWeapon);
@@ -230,9 +229,10 @@ public class Character : GameUnit
     }
     public virtual void Attack()
     {
+        WeaponManager weaponManager = weaponInHand.GetComponent<WeaponManager>();
         targetDirection = currentTarget.transform.position - transform.position;
         weaponHolder.SetActive(false);
-        weaponInHand.GetComponent<WeaponManager>().Shoot(currentTarget, targetDirection);
+        weaponManager.Shoot(currentTarget, targetDirection);
     }
     public virtual void ResetAttack()
     {

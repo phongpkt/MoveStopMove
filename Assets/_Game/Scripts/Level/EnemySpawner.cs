@@ -12,7 +12,7 @@ public class EnemySpawner : MonoBehaviour
     public Bot botPrefab;
     public Transform mapRoot;
 
-    public int botOnMap = 9;
+    public int botOnMap;
 
     private Vector3 randomPosition;
     private Vector3 position;
@@ -28,9 +28,8 @@ public class EnemySpawner : MonoBehaviour
     }
     private void Start()
     {
-        LevelManager.Instance.onCharacterDie += CheckNumberOfEnemies;
-        SimplePool.Preload(botPrefab, botOnMap, mapRoot);
         OnInit();
+        LevelManager.Instance.onCharacterDie += CheckNumberOfEnemies;
     }
     private void OnInit()
     {

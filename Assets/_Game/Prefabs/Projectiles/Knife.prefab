@@ -100,8 +100,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolType: 1
-  range: 0
-  speed: 3
   rb: {fileID: -7224847313934181616}
 --- !u!54 &-7224847313934181616
 Rigidbody:
@@ -117,7 +115,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &8550074829321196979
 BoxCollider:

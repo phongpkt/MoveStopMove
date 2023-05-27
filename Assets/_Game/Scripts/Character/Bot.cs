@@ -14,31 +14,39 @@ public class Bot : Character
     [SerializeField] private float sphereRadius = 50f;
     private int layerMask = -1;
     private Vector3 pos;
-    [SerializeField] private float idleTimeCounter = 0;
-    [SerializeField] private float idleTime;
+
+    private float idleTimeCounter;
+    private float idleTime;
+    private double reactionTimer;
 
     public override void OnEnable()
     {
         base.OnEnable();
+        idleTimeCounter = 0;
     }
     public override void OnInit()
     {
-        base.OnInit();
         agent = GetComponent<NavMeshAgent>();
-        agent.speed = speed;
-        idleTime = UnityEngine.Random.Range(0f, 2f);
         targetCircle.SetActive(false);
+        base.OnInit();
     }
     public override void Update()
     {
         base.Update();
         ShowTargetIcon();
     }
+    //===========Equip Weapon==============
+    public override void EquipWeapon()
+    {
+        equipedWeapon = (Weapon)UnityEngine.Random.Range(0, 4);
+        base.EquipWeapon();
+    }
+
     //===========Patrolling==============
     public override void Moving()
     {
         idleTimeCounter += Time.deltaTime;
-        if (idleTimeCounter > idleTime)
+        if (idleTimeCounter >= idleTime)
         {
             ChangeState(PatrolState);
             idleTimeCounter = 0;
@@ -46,16 +54,16 @@ public class Bot : Character
     }
     public override void Patrol()
     {
+        agent.speed = speed;
         agent.isStopped = false;
         agent.SetDestination(pos);
-        if(!agent.hasPath || Targets.Count != 0)
-        {
-            ChangeState(IdleState);
-        }
+        ReactionTime();
     }
     public override void FindDirection()
     {
         idleTime = UnityEngine.Random.Range(0f, 2f);
+        reactionTimer = UnityEngine.Random.Range(0.5f, 1.5f);
+
         Vector3 randDirection = UnityEngine.Random.insideUnitSphere * sphereRadius;
         randDirection += transform.position;
         NavMeshHit hit;
@@ -67,11 +75,18 @@ public class Bot : Character
     {
         agent.isStopped = true;
     }
+    private void ReactionTime()
+    {
+        reactionTimer -= Time.deltaTime;
+        if (reactionTimer <= 0)
+        {
+            ChangeState(IdleState);
+        }
+    }
     //===========Die==============
     public override void Die()
     {
         base.Die();
-        //LevelManager.Instance.CheckNumberOfEnemies();
     }
     public override void DespawnWhenDie()
     {

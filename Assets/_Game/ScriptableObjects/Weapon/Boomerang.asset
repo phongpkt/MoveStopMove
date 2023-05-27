@@ -17,5 +17,5 @@ MonoBehaviour:
   model: {fileID: 6031598501812518757, guid: a8e6c414735adc74593894a2f19657bb, type: 3}
   icon: {fileID: 21300000, guid: 850560a3d5d05414985431b7fe969284, type: 3}
   price: 1000
-  range: 10
+  range: 5
   speed: 1

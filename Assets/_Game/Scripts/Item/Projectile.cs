@@ -5,12 +5,12 @@ using UnityEngine;
 public class Projectile : GameUnit
 {
     private Character _Owner;
-    [SerializeField] private float range;
-    [SerializeField] private float speed;
+    private float range;
+    private float speed;
     public Rigidbody rb;
     private void FixedUpdate()
     {
-        if (range < _Owner.baseAttackRange)
+        if (range < 0)
         {
             OnDespawn();
         }
@@ -23,7 +23,7 @@ public class Projectile : GameUnit
     {
         _Owner = owner;
         range = weapon.range;
-        speed = weapon.speed;
+        speed = weapon.speed + 1f;
         rb.velocity = direction * speed;
     }
     private void OnTriggerEnter(Collider other)
