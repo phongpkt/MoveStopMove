@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +10,16 @@ public class SkinShopUIManager : MonoBehaviour
     [SerializeField] private GameObject buyButton;
     [SerializeField] private GameObject equipButton;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private TMP_Text priceText;
+    [SerializeField] private TMP_Text equipText;
 
     [SerializeField] private GameObject[] pages;
     private int currentPage;
 
-    [SerializeField] private Hat[] hats;
-    [SerializeField] private Shield[] shields;
-    [SerializeField] private Pant[] pants;
-    [SerializeField] private Fullset[] fullsets;
+    [SerializeField] private HatData[] hats;
+    [SerializeField] private ShieldData[] shields;
+    [SerializeField] private PantData[] pants;
+    [SerializeField] private FullsetData[] fullsets;
 
 
     [SerializeField] private GameObject playerName;
@@ -63,55 +66,63 @@ public class SkinShopUIManager : MonoBehaviour
         currentPage = _index;
         pages[currentPage].SetActive(true);
     }
+
+    //Change player skin
+    #region Change Player Skin
     public void ChangePlayerHead(int _index)
     {
         switch (_index)
         {
             case 0:
-                SpawnHat(_index);
+                player.EquipHat(Hats.rau, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save();
                 break;
             case 1:
-                SpawnHat(_index);
+                player.EquipHat(Hats.crown, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save();
                 break;
             case 2:
-                SpawnHat(_index);
+                player.EquipHat(Hats.cowboy, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save();
                 break;
             case 3:
-                SpawnHat(_index);
+                player.EquipHat(Hats.ear, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save();
                 break;
             case 4:
-                SpawnHat(_index);
+                player.EquipHat(Hats.hat, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save(); 
                 break;
             case 5:
-                SpawnHat(_index);
+                player.EquipHat(Hats.hat_cap, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save(); 
                 break;
             case 6:
-                SpawnHat(_index);
+                player.EquipHat(Hats.hat_yellow, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save(); 
                 break;
             case 7:
-                SpawnHat(_index);
+                player.EquipHat(Hats.headPhone, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save(); 
                 break;
             case 8:
-                SpawnHat(_index);
+                player.EquipHat(Hats.arrow, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save(); 
                 break;
             case 9:
-                SpawnHat(_index);
+                player.EquipHat(Hats.horn, _index);
+                PlayerPrefs.SetInt("hat", _index);
+                PlayerPrefs.Save(); 
                 break;
-        }
-    }
-    private void SpawnHat(int index)
-    {
-        Transform hat = player.headPosition;
-        if (hat.childCount > 0)
-        {
-            Destroy(hat.GetChild(0).gameObject);
-        }
-        foreach (var item in hats)
-        {
-            if (item != null && item.index == index)
-            {
-                Instantiate(item.model, player.headPosition);
-            }
         }
     }
     public void ChangePlayerPant(int _index)
@@ -119,44 +130,32 @@ public class SkinShopUIManager : MonoBehaviour
         switch (_index)
         {
             case 0:
-                ChangePants(_index);
+                player.EquipPant(Pants.batman, _index);
                 break;
             case 1:
-                ChangePants(_index);
+                player.EquipPant(Pants.chambi, _index);
                 break;
             case 2:
-                ChangePants(_index);
+                player.EquipPant(Pants.comy, _index);
                 break;
             case 3:
-                ChangePants(_index);
+                player.EquipPant(Pants.dabao, _index);
                 break;
             case 4:
-                ChangePants(_index);
+                player.EquipPant(Pants.onion, _index); 
                 break;
             case 5:
-                ChangePants(_index);
+                player.EquipPant(Pants.pokemon, _index);
                 break;
             case 6:
-                ChangePants(_index);
+                player.EquipPant(Pants.rainbow, _index);
                 break;
             case 7:
-                ChangePants(_index);
+                player.EquipPant(Pants.skull, _index);
                 break;
             case 8:
-                ChangePants(_index);
+                player.EquipPant(Pants.vantim, _index);
                 break;
-            default:
-                break;
-        }
-    }
-    private void ChangePants(int index)
-    {
-        foreach (var item in pants)
-        {
-            if (item != null && item.index == index)
-            {
-                player.pantRenderer.material = item.material;
-            }
         }
     }
     public void ChangePlayerShield(int _index)
@@ -164,26 +163,11 @@ public class SkinShopUIManager : MonoBehaviour
         switch (_index)
         {
             case 0:
-                ChangeShield(_index);
+                player.EquipShield(Shields.khien, _index);
                 break;
             case 1:
-                ChangeShield(_index);
+                player.EquipShield(Shields.shield, _index);
                 break;
-        }
-    }
-    private void ChangeShield(int index)
-    {
-        Transform shield = player.shieldPosition;
-        if (shield.childCount > 0)
-        {
-            Destroy(shield.GetChild(0).gameObject);
-        }
-        foreach (var item in shields)
-        {
-            if (item != null && item.index == index)
-            {
-                Instantiate(item.model, player.shieldPosition);
-            }
         }
     }
     public void ChangePlayerSkin(int _index)
@@ -191,71 +175,112 @@ public class SkinShopUIManager : MonoBehaviour
         switch (_index)
         {
             case 0:
-                ChangeSkin(_index);
+                player.EquipFullset(FullSets.devil, _index);
                 break;
             case 1:
-                ChangeSkin(_index);
+                player.EquipFullset(FullSets.angel, _index);
                 break;
             case 2:
-                ChangeSkin(_index);
+                player.EquipFullset(FullSets.witch, _index);
                 break;
             case 3:
-                ChangeSkin(_index);
+                player.EquipFullset(FullSets.deadpool, _index);
                 break;
             case 4:
-                ChangeSkin(_index);
+                player.EquipFullset(FullSets.thor, _index);
                 break;
         }
     }
-    private void ChangeSkin(int index)
-    {
-        ResetSkin();
-        foreach (var item in fullsets)
-        {
-            if (item.index == index)
-            {
-                if(item.Head != null)
-                {
-                    Instantiate(item.Head, player.headPosition);
-                }
-                if (item.Tail != null)
-                {
-                    Instantiate(item.Tail, player.tailPosition);
-                }
-                if (item.Back != null)
-                {
-                    Instantiate(item.Back, player.backPosition);
-                }
-                if (item.LeftHand != null)
-                {
-                    Instantiate(item.LeftHand, player.shieldPosition);
-                }
-                player.skinRenderer.material = item.Skin;
-            }
-        }
-    }
-    private void ResetSkin()
-    {
-        Transform hat = player.headPosition;
-        Transform back = player.backPosition;
-        Transform shield = player.shieldPosition;
-        Transform tail = player.tailPosition;
+    #endregion
 
-        if (hat.childCount > 0)
+    #region Buy Skin
+    public void CheckHatState(int btnIndex)
+    {
+        int state = PlayerPrefs.GetInt("clothesState" + btnIndex, 0);
+        switch (state)
         {
-            Destroy(hat.GetChild(0).gameObject);
-        }
-        if (back.childCount > 0)
-        {
-            Destroy(back.GetChild(0).gameObject);
-        }
-        if (shield.childCount > 0)
-        {
-            Destroy(shield.GetChild(0).gameObject);
-        }
-        if (tail.childCount > 0)
-        {
-            Destroy(tail.GetChild(0).gameObject);
+            case 0: //chua mua
+                buyButton.SetActive(true);
+                equipButton.SetActive(false);
+                priceText.SetText(hats[btnIndex].price.ToString());
+                break;
+            case 1: //da mua, chua equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Select");
+                break;
+            case 2://da equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Equipped");
+                break;
         }
     }
+    private void CheckPantState(int btnIndex)
+    {
+        int state = PlayerPrefs.GetInt("clothesState" + btnIndex, 0);
+        switch (state)
+        {
+            case 0: //chua mua
+                buyButton.SetActive(true);
+                equipButton.SetActive(false);
+                //priceText.SetText(pants[btnIndex].price.ToString());
+                break;
+            case 1: //da mua, chua equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Select");
+                break;
+            case 2://da equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Equipped");
+                break;
+        }
+    }
+    private void CheckShieldState(int btnIndex)
+    {
+        int state = PlayerPrefs.GetInt("headState" + btnIndex, 0);
+        switch (state)
+        {
+            case 0: //chua mua
+                buyButton.SetActive(true);
+                equipButton.SetActive(false);
+                //priceText.SetText(shields[btnIndex].price.ToString());
+                break;
+            case 1: //da mua, chua equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Select");
+                break;
+            case 2://da equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Equipped");
+                break;
+        }
+    }
+    private void CheckSkinState(int btnIndex)
+    {
+        int state = PlayerPrefs.GetInt("headState" + btnIndex, 0);
+        switch (state)
+        {
+            case 0: //chua mua
+                buyButton.SetActive(true);
+                equipButton.SetActive(false);
+                //priceText.SetText(skin[btnIndex].price.ToString());
+                break;
+            case 1: //da mua, chua equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Select");
+                break;
+            case 2://da equip
+                buyButton.SetActive(false);
+                equipButton.SetActive(true);
+                equipText.SetText("Equipped");
+                break;
+        }
+    }
+    #endregion
 }

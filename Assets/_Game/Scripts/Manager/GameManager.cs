@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState { MainMenu, GamePlay, GameOver, GameWin, GamePause }
+
 public class GameManager : Singleton<GameManager>
 {
-    public enum GameState { MainMenu, GamePlay, GameOver, GameWin, GamePause }
-    public GameState gameState;
+    private GameState gameState;
+
+    public void ChangeState(GameState state)
+    {
+        this.gameState = state;
+    }
+
+    public bool IsState(GameState state) => state == this.gameState;
+
 
     public int goldPerStage;
     public int totalPlayerGold;

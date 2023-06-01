@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Crown
   m_EditorClassIdentifier: 
   index: 1
+  price: 500
   icon: {fileID: 21300000, guid: a50fa6b5fea3d264cbec440c2da1dbf8, type: 3}
   model: {fileID: 3579170175672594518, guid: f4ad14ae3be1134429e77637ac90377f, type: 3}

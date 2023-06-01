@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Hat_Yellow
   m_EditorClassIdentifier: 
   index: 6
+  price: 500
   icon: {fileID: 21300000, guid: 69fc10e773b5a814198a5883e168c2b7, type: 3}
   model: {fileID: 8124472371980262306, guid: 7b31a761f53917649be8f67e453c20af, type: 3}

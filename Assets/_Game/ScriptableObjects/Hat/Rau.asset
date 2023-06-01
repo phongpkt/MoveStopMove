@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64ec552159cd61145a5be7282ff062f1, type: 3}
   m_Name: Rau
   m_EditorClassIdentifier: 
+  index: 0
+  price: 500
   icon: {fileID: 21300000, guid: 0721f07e295ea594ba265006fe888315, type: 3}
   model: {fileID: 2531902193109823747, guid: 97bbb0ebd0862d94fa518f8f993111e1, type: 3}

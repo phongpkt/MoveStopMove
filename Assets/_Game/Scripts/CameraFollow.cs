@@ -29,7 +29,7 @@ public class CameraFollow : MonoBehaviour
     }
     void LateUpdate()
     {
-        if (GameManager.Instance.gameState == GameManager.GameState.GamePlay)
+        if (GameManager.Instance.IsState(GameState.GamePlay))
         {
             _camera.transform.position = target.position + ingamePosition;
         }

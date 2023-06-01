@@ -13,4 +13,7 @@ public class Constants
 
     public const int GOLD_PER_KILL = 10;
     public const int GOLD_PER_LEVEL = 3;
+
+    public const string CHARACTER_TAG = "Character";
+    public const int LAYER_MASK = -1;
 }

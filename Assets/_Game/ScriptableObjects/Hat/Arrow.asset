@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Arrow
   m_EditorClassIdentifier: 
   index: 8
+  price: 500
   icon: {fileID: 21300000, guid: 2f8937590677b044b8619858abca9ecf, type: 3}
   model: {fileID: 3560000077428827588, guid: 940f1c77a638d0743962ccad5a541cbc, type: 3}

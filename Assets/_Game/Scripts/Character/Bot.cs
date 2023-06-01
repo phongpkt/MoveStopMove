@@ -3,31 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
+using UnityEngine.UIElements;
 using static UnityEngine.UI.Image;
 
 public class Bot : Character
 {
+    public enum EnemyName { Mitchell, Roy, Parker, Steve, Barnes, Washington, Walker, Michael, Jackson, Patterson, Griffin, Thomas, Ramirez, Bryant, Young }
     public GameObject targetCircle;
+    public Indicator wayPointIndicator;
 
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private float sphereRadius = 50f;
-    private int layerMask = -1;
     private Vector3 pos;
 
     private float idleTimeCounter;
     private float idleTime;
-    private double reactionTimer;
+    private double patrolTime;
 
-    public override void OnEnable()
+    public UnityAction<Bot> deathAction;
+
+    private void Awake()
     {
-        base.OnEnable();
+        agent = GetComponent<NavMeshAgent>();
+        targetCircle.SetActive(false);
         idleTimeCounter = 0;
     }
     public override void OnInit()
     {
-        agent = GetComponent<NavMeshAgent>();
-        targetCircle.SetActive(false);
+        SetUpIndicator();
         base.OnInit();
     }
     public override void Update()
@@ -35,16 +40,26 @@ public class Bot : Character
         base.Update();
         ShowTargetIcon();
     }
-    //===========Equip Weapon==============
-    public override void EquipWeapon()
+    //==========In game UI==============
+    public void SetUpIndicator() 
     {
-        equipedWeapon = (Weapon)UnityEngine.Random.Range(0, 4);
-        base.EquipWeapon();
+        wayPointIndicator = SimplePool.Spawn<Indicator>(PoolType.Indicator, transform.position, Quaternion.identity);
+        wayPointIndicator.OnInit(this, transform);
+    }
+
+    //===========Equip Weapon==============
+    public override void EquipWeapon(Weapon _weapon)
+    {
+        _weapon = (Weapon)UnityEngine.Random.Range(0, 4);
+        equipedWeapon = _weapon;
+        base.EquipWeapon(equipedWeapon);
     }
 
     //===========Patrolling==============
+    #region Patrol
     public override void Moving()
     {
+        idleTime = UnityEngine.Random.Range(0f, 2f);
         idleTimeCounter += Time.deltaTime;
         if (idleTimeCounter >= idleTime)
         {
@@ -57,49 +72,55 @@ public class Bot : Character
         agent.speed = speed;
         agent.isStopped = false;
         agent.SetDestination(pos);
-        ReactionTime();
+        SetIdleTime();
     }
     public override void FindDirection()
     {
-        idleTime = UnityEngine.Random.Range(0f, 2f);
-        reactionTimer = UnityEngine.Random.Range(0.5f, 1.5f);
+        patrolTime = UnityEngine.Random.Range(0.5f, 1.5f);
 
         Vector3 randDirection = UnityEngine.Random.insideUnitSphere * sphereRadius;
         randDirection += transform.position;
         NavMeshHit hit;
-        NavMesh.SamplePosition(randDirection, out hit, sphereRadius, layerMask);
+        NavMesh.SamplePosition(randDirection, out hit, sphereRadius, Constants.LAYER_MASK);
         Vector3 newPos = hit.position;
         pos = newPos;
     }
-    public override void StopPatrol()
+    private void SetIdleTime()
     {
-        agent.isStopped = true;
-    }
-    private void ReactionTime()
-    {
-        reactionTimer -= Time.deltaTime;
-        if (reactionTimer <= 0)
+        patrolTime -= Time.deltaTime;
+        if (patrolTime <= 0)
         {
             ChangeState(IdleState);
         }
     }
+    public override void StopPatrol()
+    {
+        agent.isStopped = true;
+        agent.speed = 0;
+    }
+    #endregion
     //===========Die==============
+    #region Die
     public override void Die()
     {
         base.Die();
     }
-    public override void DespawnWhenDie()
+    public override void OnDespawn()
     {
         SimplePool.Despawn(this);
-        LevelManager.Instance.enemyCounter.Remove(this);
-        LevelManager.Instance.totalBotAmount--;
-        LevelManager.Instance.CharacterDie();
-        LevelManager.Instance.OnFinishGame();
+        wayPointIndicator.gameObject.SetActive(false);
     }
+    public override void DespawnWhenDie()
+    {
+        OnDespawn();
+        deathAction?.Invoke(this);
+    }
+    #endregion
     //===========Addition GamePlay==============
     private void ShowTargetIcon()
     {
         if (gameObject.GetComponent<Bot>() == Player.target)
+        if (this == Player.target)
         {
             targetCircle.SetActive(true);
         }

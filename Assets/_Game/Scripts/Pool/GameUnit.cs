@@ -16,7 +16,7 @@ public abstract class GameUnit : MonoBehaviour
 
     public PoolType poolType;
 
-    public abstract void OnInit();
-    public abstract void OnDespawn();
+    public virtual void OnInit() { }
+    public virtual void OnDespawn() { }
 
 }

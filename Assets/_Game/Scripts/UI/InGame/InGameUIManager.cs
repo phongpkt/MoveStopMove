@@ -17,7 +17,7 @@ public class InGameUIManager : MonoBehaviour
         pointText.SetText(player.point.ToString());
         aliveText.SetText("Alive: " + (LevelManager.Instance.enemyCounter.Count + 1).ToString() + "/" + (LevelManager.Instance.totalBotAmount + 1).ToString());
 
-        if (GameManager.Instance.gameState == GameManager.GameState.GameOver)
+        if (GameManager.Instance.IsState(GameState.GameOver))
         {
             gameObject.SetActive(false);
         }

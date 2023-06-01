@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Weapons")]
-public class Weapons : ScriptableObject
+public class WeaponData : ScriptableObject
 {
     public int index;
     public new string name;
-    public GameObject model;
+    public WeaponManager model;
     public Sprite icon;
 
     public int price;

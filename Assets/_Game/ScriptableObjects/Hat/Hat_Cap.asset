@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Hat_Cap
   m_EditorClassIdentifier: 
   index: 5
+  price: 500
   icon: {fileID: 21300000, guid: 76e934370403f35428e37cc379bed4c7, type: 3}
   model: {fileID: 4692614872612486097, guid: 994028e509921bf468fff1463fd6cdf4, type: 3}

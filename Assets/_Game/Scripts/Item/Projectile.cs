@@ -6,32 +6,32 @@ public class Projectile : GameUnit
 {
     private Character _Owner;
     private float range;
-    private float speed;
+    private float bulletSpeed;
     public Rigidbody rb;
-    private void FixedUpdate()
+    private void Update()
     {
-        if (range < 0)
+        if (range <= 0)
         {
             OnDespawn();
         }
         else
         {
-            range -= speed * Time.deltaTime;
+            range -= bulletSpeed * Time.deltaTime;
         }
     }
-    public void OnInit(Character owner, Vector3 direction, Weapons weapon)
+    public void OnInit(Character owner, Vector3 direction, WeaponData weapon)
     {
         _Owner = owner;
-        range = weapon.range;
-        speed = weapon.speed + 1f;
-        rb.velocity = direction * speed;
+        range = owner.attackRangeRadius - 5f;
+        bulletSpeed = weapon.speed + 1f;
+        rb.velocity = direction * bulletSpeed;
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Character"))
+        if (other.gameObject.CompareTag(Constants.CHARACTER_TAG))
         {
             OnDespawn();
-            other.gameObject.GetComponent<Character>().Hit();
+            Cache.GetCharacter(other).Hit();
             _Owner.IncreasePoint();
         }
     }
@@ -39,9 +39,4 @@ public class Projectile : GameUnit
     {
         SimplePool.Despawn(this);
     }
-    public override void OnInit()
-    {
-        
-    }
-
 }

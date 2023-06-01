@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Pant", menuName = "Pants")]
-public class Pant : ScriptableObject
+public class PantData : ScriptableObject
 {
     public int index;
     public Sprite icon;

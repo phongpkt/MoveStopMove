@@ -320,13 +320,14 @@ public enum IngameType
 { 
     PLAYER, 
     ENEMY,
-    None,
-    HpBar,
+    None
 }
 
 
 public enum PoolType
 {
+    Player,
     Bot,
-    Bullet
+    Bullet,
+    Indicator
 }

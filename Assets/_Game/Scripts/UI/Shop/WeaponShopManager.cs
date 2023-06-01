@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static Character;
 
 public class WeaponShopManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class WeaponShopManager : MonoBehaviour
     [SerializeField] private GameObject equipButton;
     [SerializeField] private GameObject mainMenu;
 
-    [SerializeField] private Weapons[] scriptableObjectWeapons;
+    [SerializeField] private WeaponData[] scriptableObjectWeapons;
     [SerializeField] private WeaponDisplay weaponDisplay;
     private int currentWeaponIndex;
 
@@ -70,31 +71,36 @@ public class WeaponShopManager : MonoBehaviour
         {
             case 0:
                 player.equipedWeapon = Character.Weapon.Arrow;
-                player.EquipWeapon();
+                player.EquipWeapon((Weapon)currentWeaponIndex);
+                PlayerPrefs.SetInt("currentWeaponIndex", currentWeaponIndex);
                 PlayerPrefs.Save();
                 CheckArrowState();
                 break;
             case 1:
                 player.equipedWeapon = Character.Weapon.Hammer;
-                player.EquipWeapon();
+                player.EquipWeapon((Weapon)currentWeaponIndex);
+                PlayerPrefs.SetInt("currentWeaponIndex", currentWeaponIndex);
                 PlayerPrefs.Save();
                 CheckHammerState();
                 break;
             case 2:
                 player.equipedWeapon = Character.Weapon.Knife;
-                player.EquipWeapon();
+                player.EquipWeapon((Weapon)currentWeaponIndex);
+                PlayerPrefs.SetInt("currentWeaponIndex", currentWeaponIndex);
                 PlayerPrefs.Save();
                 CheckKnifeState();
                 break;
             case 3:
                 player.equipedWeapon = Character.Weapon.Candy;
-                player.EquipWeapon();
+                player.EquipWeapon((Weapon)currentWeaponIndex);
+                PlayerPrefs.SetInt("currentWeaponIndex", currentWeaponIndex);
                 PlayerPrefs.Save();
                 CheckCandyState();
                 break;
             case 4:
                 player.equipedWeapon = Character.Weapon.Boomerang;
-                player.EquipWeapon();
+                player.EquipWeapon((Weapon)currentWeaponIndex);
+                PlayerPrefs.SetInt("currentWeaponIndex", currentWeaponIndex);
                 PlayerPrefs.Save();
                 CheckBoomerangState();
                 break;
@@ -112,11 +118,6 @@ public class WeaponShopManager : MonoBehaviour
                     PlayerPrefs.SetInt("hammerBuyState", 1);
                     PlayerPrefs.Save();
                     CheckHammerState();
-                }
-                else
-                {
-                    Debug.Log("insufficient gold");
-                    Debug.Log("player gold: " + GameManager.Instance.totalPlayerGold);
                 }
                 break;
             case 2:

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Cowboy
   m_EditorClassIdentifier: 
   index: 2
+  price: 500
   icon: {fileID: 21300000, guid: 7ecc7cd28cb66fb41ac2e56ca5e22d5c, type: 3}
   model: {fileID: 8436335374381717319, guid: f9490aca1a62603428003c881a1d2d80, type: 3}

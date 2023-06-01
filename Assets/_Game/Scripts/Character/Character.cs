@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,6 +10,10 @@ using UnityEngine.TextCore.Text;
 using static Character;
 using static UnityEditor.Progress;
 
+public enum Hats { arrow, cowboy, crown, ear, hat, hat_cap, hat_yellow, headPhone, rau, horn };
+public enum Pants { _default, batman, chambi, comy, dabao, onion, pokemon, rainbow, skull, vantim };
+public enum Shields { khien, shield };
+public enum FullSets { devil, angel, witch, deadpool, thor };
 public class Character : GameUnit
 {
     //Set target
@@ -17,11 +22,19 @@ public class Character : GameUnit
     private Vector3 targetDirection;
 
     //UI
-    [SerializeField] protected GameObject inGameCanvas;
     [HideInInspector] public Character currentAttacker;
     [HideInInspector] public string characterName;
 
     //Skin
+    [HideInInspector] public Hats hat;
+    [HideInInspector] public Pants pant;
+    [HideInInspector] public Shields shield;
+    [HideInInspector] public FullSets fullSet;
+    [SerializeField] private HatData[] hatData;
+    [SerializeField] private ShieldData[] shieldData;
+    [SerializeField] private PantData[] pantData;
+    [SerializeField] private FullsetData[] fullsetData;
+
     [SerializeField] public Transform headPosition;
     [SerializeField] public Transform backPosition;
     [SerializeField] public Transform shieldPosition;
@@ -29,25 +42,26 @@ public class Character : GameUnit
     [SerializeField] public SkinnedMeshRenderer pantRenderer;
     [SerializeField] public SkinnedMeshRenderer skinRenderer;
 
+
     //Character data
     public Rigidbody rb;
     public float speed;
-    public Transform attackRangeScale;
     [HideInInspector] public float attackIntervalTimer;
     [HideInInspector] public float attackInterval;
     [HideInInspector] public int point;
     [HideInInspector] private int pointToGrow;
     private Vector3 increaseSize = new Vector3(0.2f, 0.2f, 0.2f);
-    [HideInInspector] public float baseAttackRange;
+    public SphereCollider attackRangeCollider;
+    public float attackRangeRadius;
 
     //Weapons
     public enum Weapon { Arrow, Hammer, Knife, Candy, Boomerang }
     public Weapon equipedWeapon;
     [SerializeField] protected Transform firePoint;
     [SerializeField] protected GameObject weaponHolder;
-    [SerializeField] protected Weapons[] weaponsList;
-    private int currentWeapon;
-    public GameObject weaponInHand;
+    [SerializeField] protected WeaponData[] weaponsList;
+    public int currentWeapon;
+    public WeaponManager weaponInHand;
 
     //Character action bool
     [HideInInspector] public bool isHit;
@@ -71,35 +85,24 @@ public class Character : GameUnit
     public virtual void OnEnable()
     {
         OnInit();
-        LevelManager.Instance.onCharacterDie += Win;
-    }
-    public virtual void OnDisable()
-    {
-        LevelManager.Instance.onCharacterDie -= Win;
     }
     public override void OnInit()
     {
-        inGameCanvas.SetActive(false);
         speed = 10f;
         point = 0;
-        pointToGrow = 5;
-        baseAttackRange = 0.5f;
+        pointToGrow = 2;
         attackInterval = 2f;
         attackIntervalTimer = attackInterval;
-        currentWeapon = 0;
-        baseAttackRange = attackRangeScale.GetComponent<SphereCollider>().radius;
+        attackRangeRadius = attackRangeCollider.radius;
         isDead = false;
-        EquipWeapon();
+        EquipWeapon((Weapon)PlayerPrefs.GetInt("currentWeaponIndex"));
         ChangeState(IdleState);
     }
-    public override void OnDespawn() { }
+
     public virtual void Update()
     {
-        if (GameManager.Instance.gameState == GameManager.GameState.GamePlay)
-        {
-            inGameCanvas.SetActive(true);
-        }
-        if (GameManager.Instance.gameState == GameManager.GameState.GamePlay)
+        //Pause before hit play
+        if (GameManager.Instance.IsState(GameState.GamePlay))
         {
             if (currentState != null)
             {
@@ -117,20 +120,15 @@ public class Character : GameUnit
     #endregion
     //===========Equip + Change Weapon==============
     #region Equip + Change Weapon
-    public virtual void EquipWeapon()
-    {
-        SwitchWeapon(equipedWeapon);
-    }
     public virtual void GetWeapon(int index)
     {
         for(int i=0; i<weaponsList.Length; i++)
         {
             if (weaponsList[i].index == index && weaponsList[i] != null)
             {
-               
-                weaponInHand = Instantiate(weaponsList[i].model, weaponHolder.transform);
-                WeaponManager weaponManager = weaponInHand.GetComponent<WeaponManager>();
-                weaponManager.firePoint = firePoint;
+                Instantiate(weaponsList[i].model.gameObject, weaponHolder.transform);
+                weaponInHand = weaponsList[i].model;
+                weaponInHand.firePoint = firePoint;
             }
         }
     }
@@ -142,7 +140,7 @@ public class Character : GameUnit
             Destroy(weapon.gameObject);
         }
     }
-    public virtual void SwitchWeapon(Weapon equipedWeapon)
+    public virtual void EquipWeapon(Weapon equipedWeapon)
     {
         switch (equipedWeapon)
         {
@@ -175,18 +173,238 @@ public class Character : GameUnit
     }
     #endregion
     //===========Change Clothes==============
-    //#TODO
-    #region Change Clothes
-    public virtual void ChangeClothes()
+    #region Equip + Change Clothes
+    public virtual void EquipHat(Hats hat, int hatIndex)
     {
-
+        switch (hat)
+        {
+            case Hats.rau:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.crown:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.cowboy:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.ear:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.hat:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.hat_cap:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.hat_yellow:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.headPhone:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.arrow:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+            case Hats.horn:
+                ResetHead();
+                ChangeHat(hatIndex);
+                break;
+        }
     }
-    public virtual void ResetClothes()
+    public void EquipPant(Pants pant,int pantIndex)
     {
-        Destroy(headPosition.gameObject);
-        Destroy(tailPosition.gameObject);
-        Destroy(shieldPosition.gameObject);
-        Destroy(backPosition.gameObject);
+        switch (pant)
+        {
+            case Pants.batman:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.chambi:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.comy:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.dabao:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.onion:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.pokemon:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.rainbow:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.skull:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants.vantim:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+            case Pants._default:
+                ChangePants(pantIndex);
+                PlayerPrefs.SetInt("pant", pantIndex);
+                break;
+        }
+    }
+    public void EquipShield(Shields shield, int shieldIndex)
+    {
+        switch (shield)
+        {
+            case Shields.khien:
+                ResetShield();
+                ChangeShield(shieldIndex);
+                PlayerPrefs.SetInt("shield", shieldIndex);
+                break;
+            case Shields.shield:
+                ResetShield();
+                ChangeShield(shieldIndex);
+                PlayerPrefs.SetInt("shield", shieldIndex);
+                break;
+        }
+    }
+    public void EquipFullset(FullSets fullset, int fullsetIndex)
+    {
+        switch (fullset)
+        {
+            case FullSets.devil:
+                ResetAllClothes();
+                ChangeSkin(fullsetIndex);
+                PlayerPrefs.SetInt("fullset", fullsetIndex);
+                break;
+            case FullSets.angel:
+                ResetAllClothes();
+                ChangeSkin(fullsetIndex);
+                PlayerPrefs.SetInt("shield", fullsetIndex);
+                break;
+            case FullSets.witch:
+                ResetAllClothes();
+                ChangeSkin(fullsetIndex);
+                PlayerPrefs.SetInt("shield", fullsetIndex);
+                break;
+            case FullSets.deadpool:
+                ResetAllClothes();
+                ChangeSkin(fullsetIndex);
+                PlayerPrefs.SetInt("shield", fullsetIndex);
+                break;
+            case FullSets.thor:
+                ResetAllClothes();
+                ChangeSkin(fullsetIndex);
+                PlayerPrefs.SetInt("shield", fullsetIndex);
+                break;
+        }
+    }
+    private void ChangeHat(int _index)
+    {
+        foreach (var item in hatData)
+        {
+            if (item != null && item.index == _index)
+            {
+                Instantiate(item.model, headPosition);
+            }
+        }
+    }
+    private void ChangePants(int _index)
+    {
+        foreach (var item in pantData)
+        {
+            if (item != null && item.index == _index)
+            {
+                pantRenderer.material = item.material;
+            }
+        }
+    }
+    private void ChangeShield(int _index)
+    {
+        foreach (var item in shieldData)
+        {
+            if (item != null && item.index == _index)
+            {
+                Instantiate(item.model, shieldPosition);
+            }
+        }
+    }
+    private void ChangeSkin(int _index)
+    {
+        foreach (var item in fullsetData)
+        {
+            if (item.index == _index)
+            {
+                if (item.Head != null)
+                {
+                    Instantiate(item.Head, headPosition);
+                }
+                if (item.Tail != null)
+                {
+                    Instantiate(item.Tail, tailPosition);
+                }
+                if (item.Back != null)
+                {
+                    Instantiate(item.Back, backPosition);
+                }
+                if (item.LeftHand != null)
+                {
+                    Instantiate(item.LeftHand, shieldPosition);
+                }
+                skinRenderer.material = item.Skin;
+            }
+        }
+    }
+    public virtual void ResetAllClothes()
+    {
+        ResetHead();
+        //default pants
+        EquipPant(Pants._default, 9);
+        ResetShield();
+        ResetBack();
+        ResetTail();
+    }
+    public virtual void ResetHead()
+    {
+        foreach (Transform item in headPosition)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+    public virtual void ResetShield()
+    {
+        foreach (Transform item in shieldPosition)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+    public virtual void ResetBack()
+    {
+        foreach (Transform item in backPosition)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+    public virtual void ResetTail()
+    {
+        foreach (Transform item in tailPosition)
+        {
+            Destroy(item.gameObject);
+        }
     }
     #endregion
     //===========Increase Size + Attack range==============
@@ -202,10 +420,18 @@ public class Character : GameUnit
     public virtual void Grow()
     {
         gameObject.transform.localScale += increaseSize;
-        pointToGrow += 5;
+        if(pointToGrow < 5)
+        {
+            pointToGrow += 3;
+        }
+        else
+        {
+            pointToGrow += 5;
+        }
+
+
     }
     #endregion
-
     //===========Attack==============
     #region Attack
     public virtual void CheckAroundCharacters() 
@@ -229,10 +455,9 @@ public class Character : GameUnit
     }
     public virtual void Attack()
     {
-        WeaponManager weaponManager = weaponInHand.GetComponent<WeaponManager>();
         targetDirection = currentTarget.transform.position - transform.position;
         weaponHolder.SetActive(false);
-        weaponManager.Shoot(currentTarget, targetDirection);
+        weaponInHand.Shoot(this, targetDirection);
     }
     public virtual void ResetAttack()
     {
@@ -276,9 +501,9 @@ public class Character : GameUnit
         await Task.Delay(TimeSpan.FromSeconds(1.5));
         DespawnWhenDie();
     }
+    public override void OnDespawn() { }
     public virtual void DespawnWhenDie() { }
     #endregion
-
     //===========Animation==============
     public void ChangeAnim(string animName)
     {
@@ -292,8 +517,6 @@ public class Character : GameUnit
     //===========StateController==============
     public virtual void ChangeState(IState state)
     {
-        if (currentState == state)
-            return;
         if (currentState != null)
         {
             currentState.OnExit(this);

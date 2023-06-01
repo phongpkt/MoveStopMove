@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 3
   name: Candy
-  model: {fileID: 6941093721834497528, guid: 95b313064d899ba44b15c4016c13921d, type: 3}
+  model: {fileID: 4119668924679525516, guid: 95b313064d899ba44b15c4016c13921d, type: 3}
   icon: {fileID: 21300000, guid: 82541a9d027d1ef459d4baf465a125ce, type: 3}
   price: 500
   range: 3

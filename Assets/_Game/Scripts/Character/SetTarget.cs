@@ -8,9 +8,9 @@ public class SetTarget : MonoBehaviour
     public Character Owner;
     private void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag("Character"))
+        if (col.CompareTag(Constants.CHARACTER_TAG))
         {
-            Character target = col.GetComponent<Character>();
+            Character target = Cache.GetCharacter(col);
             if (target != Owner)
             {
                 Owner.Targets.Add(target);
@@ -19,9 +19,10 @@ public class SetTarget : MonoBehaviour
     }
     private void OnTriggerExit(Collider col)
     {
-        if (col.CompareTag("Character"))
+        if (col.CompareTag(Constants.CHARACTER_TAG))
         {
-            Character target = col.GetComponent<Character>();
+            //Character target = col.GetComponent<Character>();
+            Character target = Cache.GetCharacter(col);
             if (target != Owner)
             {
                 if (Owner.Targets.Contains(target)) 

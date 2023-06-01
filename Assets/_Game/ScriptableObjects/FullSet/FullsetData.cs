@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Set", menuName = "Fullset")]
-public class Fullset : ScriptableObject
+public class FullsetData : ScriptableObject
 {
     public int index;
     public Material Skin;

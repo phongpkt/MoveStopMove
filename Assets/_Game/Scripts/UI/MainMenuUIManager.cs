@@ -64,7 +64,7 @@ public class MainMenuUIManager : MonoBehaviour
     public void PressPlayButton()
     {
         _joystick.SetActive(true);
-        GameManager.Instance.gameState = GameManager.GameState.GamePlay;
+        GameManager.Instance.ChangeState(GameState.GamePlay);
         StartCoroutine(OpenInGameUI());
         CloseMainMenu();
     }
@@ -78,7 +78,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         anim.SetBool("IsShow", false);
         anim.SetBool("IsHide", true);
-        if (GameManager.Instance.gameState == GameManager.GameState.GamePlay)
+        if (GameManager.Instance.IsState(GameState.GamePlay))
         {
             playerNameIPF.SetActive(false);
             StartCoroutine(HideMainMenu());
