@@ -4,33 +4,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using static GameManager;
 using Random = UnityEngine.Random;
 
 public class LevelManager : Singleton<LevelManager>
 {
+    public Character player;
     public Transform playerTf;
 
-    public UnityAction onCharacterDie;
     public List<Bot> enemyCounter = new List<Bot>();
     public int totalBotAmount;
     public int totalBotOnMap;
-
+    //For UI
+    public int total;
 
     private Vector3 randomPosition;
+    private Vector3 randomChestPosition;
     private Vector3 position;
     private int xPos;
     private int zPos;
+    
+    //Chest
+    public List<Chest> chestCounter = new List<Chest>();
+    private int totalChestOnMap;
+    private float spawnChestTime = 3f;
+    private float spawnChestTimer;
 
     private void Awake()
     {
-        totalBotAmount = 20;
+        totalChestOnMap = 3;
+        totalBotAmount = 1;
+        totalBotOnMap = 1;
+        total = totalBotAmount;
+        spawnChestTimer = spawnChestTime;
     }
-    private void Start()
+    private void Update()
     {
-        OnInit();
-        OnPlay();
+        if (GameManager.Instance.IsState(GameState.GamePlay))
+        {
+            CheckNumberOfChest();
+        }
     }
     public void OnFinishGame()
     {
@@ -39,6 +54,11 @@ public class LevelManager : Singleton<LevelManager>
             GameManager.Instance.ChangeState(GameState.GameWin);
             SimplePool.CollectAll();
             enemyCounter.Clear();
+            player.Win();
+        }
+        else
+        {
+            CheckNumberOfEnemies();
         }
     }
     public void LoadLevel(int level)
@@ -47,10 +67,7 @@ public class LevelManager : Singleton<LevelManager>
     }
     public void OnPlay()
     {
-        if (GameManager.Instance.IsState(GameState.GamePlay))
-        {
-            CheckNumberOfEnemies();
-        }
+        OnInit();
     }
     public void OnInit()
     {
@@ -59,8 +76,21 @@ public class LevelManager : Singleton<LevelManager>
             SpawnBot();
         }
     }
-    public void OnDespawn()
+    public void OnRetry()
     {
+        //reset game
+        SimplePool.CollectAll();
+        enemyCounter.Clear();
+        chestCounter.Clear();
+        //reset player
+        playerTf.position = new Vector3(0, 0, -5f);
+        playerTf.rotation = Quaternion.Euler(0f, 180f, 0f);
+        playerTf.localScale = new Vector3(1, 1, 1);
+        player.gameObject.SetActive(true);
+        player.OnInit();
+        //resetcamera
+        Camera.main.transform.position = new Vector3(0f, 8f, -20f);
+        Camera.main.transform.rotation = Quaternion.Euler(13f, 0f, 0f);
 
     }
     private void CheckNumberOfEnemies()
@@ -94,5 +124,29 @@ public class LevelManager : Singleton<LevelManager>
         totalBotAmount -= 1;
         //check game
         OnFinishGame();
+    }
+    private void SpawnChest()
+    {
+        xPos = Random.Range(-50, 50);
+        zPos = Random.Range(-50, 50);
+        position = new Vector3(xPos, 0, zPos);
+
+        NavMeshHit closestHit;
+        NavMesh.SamplePosition(position, out closestHit, 180f, NavMesh.AllAreas);
+        randomChestPosition = closestHit.position;
+        Chest chest = SimplePool.Spawn<Chest>(PoolType.Chest, randomChestPosition, Quaternion.identity);
+        chestCounter.Add(chest);
+    }
+    private void CheckNumberOfChest()
+    {
+        if (chestCounter.Count < totalChestOnMap)
+        {
+            spawnChestTimer -= Time.deltaTime;
+            if (spawnChestTimer <= 0)
+            {
+                SpawnChest();
+                spawnChestTimer = spawnChestTime;
+            }
+        }
     }
 }

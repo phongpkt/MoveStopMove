@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 public class Player : Character
 {
     [SerializeField] protected GameObject inGameCanvas;
-    [SerializeField] private GameObject _joystickUI;
+    [SerializeField] private GameObject _joystick;
     [SerializeField] private FloatingJoystick joystick;
     [SerializeField] private GameObject victoryUI;
     [SerializeField] private GameObject loseUI;
@@ -16,22 +13,36 @@ public class Player : Character
     private float horizontal;
     private float vertical;
     private Vector3 direction;
-
+    
     public static Character target;
     public override void OnInit()
     {
         inGameCanvas.SetActive(false);
-        //TODO: nen viet thanh mot datamanager rieng
-        dataManager();
+        DataManager();
+        rb.velocity = Vector3.zero;
         base.OnInit();
     }
-    private void dataManager()
+    private void DataManager()
     {
+        characterName = PlayerPrefs.GetString("playerName", "Player");
         int currentWeapon = PlayerPrefs.GetInt("currentWeaponIndex");
         equipedWeapon = (Weapon)PlayerPrefs.GetInt("equipedWeapon", currentWeapon);
-        characterName = PlayerPrefs.GetString("playerName", "Player");
+        EquipWeapon(equipedWeapon);
         int currentHat = PlayerPrefs.GetInt("hat");
-        EquipHat((Hats)currentHat, currentHat);
+        int currentPant = PlayerPrefs.GetInt("pant");
+        //TODO: shield luon bi spawn khi mo game
+        //int currentShield = PlayerPrefs.GetInt("shield");
+        int currentSkin = PlayerPrefs.GetInt("fullset");
+        if(currentSkin == 5) //default skin
+        {
+            EquipHat((Hats)currentHat, currentHat);
+            EquipPant((Pants)currentPant, currentPant);
+            //EquipShield((Shields)currentShield, currentShield);
+        }
+        else
+        {
+            EquipFullset((FullSets)currentSkin, currentSkin);
+        }
     }
     public override void Update()
     {
@@ -40,11 +51,6 @@ public class Player : Character
             inGameCanvas.SetActive(true);
         }
         base.Update();
-        //if(Targets.Count != 0 )
-        //    target = Targets[0];
-        //else
-        //    target = null;
-
         target = Targets.Count > 0 ? Targets[0] : null;
     }
     private void FixedUpdate()
@@ -57,32 +63,37 @@ public class Player : Character
         {
             CloseUI();
             ChangeState(WinState);
-            GameManager.Instance.GetGoldAfterStage();
+            GameManager.Instance.GetGoldAfterStage(point);
             victoryUI.SetActive(true);
+        }
+    }
+    public override void Hit()
+    {
+        base.Hit();
+        if (isHit)
+        {
+            CloseUI();
         }
     }
     public override async void Die()
     {
+        GameManager.Instance.ChangeState(GameState.GameOver);
         base.Die();
-        if (isDead)
-        {
-            CloseUI();
-            GameManager.Instance.ChangeState(GameState.GameOver);
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            gameObject.SetActive(false);
-            Lose();
-        }
+        await Task.Delay(TimeSpan.FromSeconds(1.5));
+        Lose();
     }
-    public void Lose()
+    public override void Lose()
     {
+        this.gameObject.SetActive(false);
         if(GameManager.Instance.IsState(GameState.GameOver))
         {
+            GameManager.Instance.GetGoldAfterStage(point);
             loseUI.SetActive(true);
         }
     }
     private void CloseUI()
     {
-        _joystickUI.SetActive(false);
+        _joystick.SetActive(false);
     }
     public override void Moving()
     {

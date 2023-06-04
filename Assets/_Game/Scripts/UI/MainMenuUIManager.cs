@@ -20,8 +20,6 @@ public class MainMenuUIManager : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private TMP_InputField playerName;
     [SerializeField] private GameObject playerNameIPF;
-
-    // Start is called before the first frame update
     private void OnEnable()
     {
         _joystick.SetActive(false);
@@ -47,6 +45,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         anim.SetBool("IsShow", true);
         anim.SetBool("IsHide", false);
+        gameObject.SetActive(true);
     }
 
     public void ShowWeaponShop()
@@ -65,6 +64,7 @@ public class MainMenuUIManager : MonoBehaviour
     {
         _joystick.SetActive(true);
         GameManager.Instance.ChangeState(GameState.GamePlay);
+        LevelManager.Instance.OnPlay();
         StartCoroutine(OpenInGameUI());
         CloseMainMenu();
     }

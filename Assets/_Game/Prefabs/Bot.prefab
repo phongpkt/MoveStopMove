@@ -1773,8 +1773,9 @@ MonoBehaviour:
   weaponInHand: {fileID: 0}
   isHit: 0
   isAttack: 0
-  isDead: 0
   animator: {fileID: 7557474459479002697}
+  b_name: 0
+  characterSkinData: {fileID: 11400000, guid: 1270e0a016d7a5d4f85ec7dca385c24d, type: 2}
   targetCircle: {fileID: 2290193185366255664}
   wayPointIndicator: {fileID: 0}
   agent: {fileID: 6518860658547487682}

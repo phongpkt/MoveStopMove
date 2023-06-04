@@ -54,9 +54,13 @@ MonoBehaviour:
   poolType: 3
   target: {fileID: 0}
   targetTf: {fileID: 0}
+  enemyName: {fileID: 859597094713507177}
+  pointText: {fileID: 9155228224111026137}
   enemyIcon: {fileID: 6618325105366875979}
   arrowIcon: {fileID: 5031010713169432299}
   characterInfo: {fileID: 7909554832611057253}
+  enemyColor: {fileID: 1827504599173808719}
+  arrowColor: {fileID: 7048971253471322830}
 --- !u!1 &2664589967047890489
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,8 +136,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

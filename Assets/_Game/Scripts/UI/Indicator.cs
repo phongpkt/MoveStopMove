@@ -1,9 +1,13 @@
 ﻿using PixelPlay.OffScreenIndicator;
 using System.Drawing;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
+using Image = UnityEngine.UI.Image;
 
 /// <summary>
 /// Assign this script to the indicator prefabs.
@@ -13,6 +17,9 @@ public class Indicator : GameUnit
     public Character target;
     public Transform targetTf;
 
+    [SerializeField] private TMP_Text enemyName;
+    [SerializeField] private TMP_Text pointText;
+
     [SerializeField] private GameObject enemyIcon;
     [SerializeField] private GameObject arrowIcon;
     [SerializeField] private GameObject characterInfo;
@@ -20,6 +27,9 @@ public class Indicator : GameUnit
     private Transform characterTf;
     private Transform enemyTf;
     private Transform arrowTf;
+
+    [SerializeField] private Image enemyColor;
+    [SerializeField] private Image arrowColor;
 
     private Vector3 screenCentre;
     private Vector3 offset = new Vector3(0, 4, 0);
@@ -33,24 +43,24 @@ public class Indicator : GameUnit
         characterTf = characterInfo.transform;
         screenCentre = new Vector3(Screen.width, Screen.height, 0) / 2;
     }
-    public override void OnInit()
+    private void Start()
     {
-        //enemyIcon.color = color;
-        //arrowIcon.color = color;
+        OnInit();
+        enemyColor.color = target.skinRenderer.material.color;
+        arrowColor.color = target.skinRenderer.material.color;
     }
-
-    public void OnInit(Character character, Transform characterTf)
+    public void OnInit(Bot bot, Transform botTf)
     {
-        target = character; 
-        targetTf = characterTf;
+        target = bot;
+        targetTf = botTf;
     }
-
     private void Update()
     {
         Vector3 screenPosition = OffScreenIndicatorCore.GetScreenPosition(mainCamera, targetTf.position);
         bool isTargetVisible = OffScreenIndicatorCore.IsTargetVisible(screenPosition);
-
-        if(isTargetVisible)
+        enemyName.SetText(target.characterName);
+        pointText.SetText(target.point.ToString());
+        if (isTargetVisible)
         {
             enemyIcon.SetActive(false);
             arrowIcon.SetActive(false);

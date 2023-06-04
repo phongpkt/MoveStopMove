@@ -8,6 +8,7 @@ public class Projectile : GameUnit
     private float range;
     private float bulletSpeed;
     public Rigidbody rb;
+    private Vector3 ulti = new Vector3(2f, 2f, 2f);
     private void Update()
     {
         if (range <= 0)
@@ -18,21 +19,39 @@ public class Projectile : GameUnit
         {
             range -= bulletSpeed * Time.deltaTime;
         }
+        if (_Owner.hasUlti)
+        {
+            transform.localScale += ulti * Time.deltaTime;
+        }
     }
     public void OnInit(Character owner, Vector3 direction, WeaponData weapon)
     {
         _Owner = owner;
-        range = owner.attackRangeRadius - 5f;
-        bulletSpeed = weapon.speed + 1f;
+        //Remind: chinh phan nay de game de thang hon
+        range = owner.attackRangeRadius - 6.5f;
+        bulletSpeed = weapon.speed + 0.2f;
         rb.velocity = direction * bulletSpeed;
     }
+    public void OnInitUlti(Character owner, Vector3 direction, WeaponData weapon)
+    {
+        _Owner = owner;
+        //reset scale vu khi
+        transform.localScale = new Vector3(1f, 1f, 1f);
+        range = owner.attackRangeRadius - 6.5f;
+        bulletSpeed = weapon.speed + 0.2f;
+        rb.velocity = direction * bulletSpeed;
+    }   
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag(Constants.CHARACTER_TAG))
         {
-            OnDespawn();
-            Cache.GetCharacter(other).Hit();
-            _Owner.IncreasePoint();
+            Character target = Cache.GetCharacter(other);
+            if(target != _Owner)
+            {
+                OnDespawn();
+                target.Hit();
+                _Owner.IncreasePoint();
+            }
         }
     }
     public override void OnDespawn()

@@ -13,7 +13,7 @@ using static UnityEditor.Progress;
 public enum Hats { arrow, cowboy, crown, ear, hat, hat_cap, hat_yellow, headPhone, rau, horn };
 public enum Pants { _default, batman, chambi, comy, dabao, onion, pokemon, rainbow, skull, vantim };
 public enum Shields { khien, shield };
-public enum FullSets { devil, angel, witch, deadpool, thor };
+public enum FullSets { devil, angel, witch, deadpool, thor, _default};
 public class Character : GameUnit
 {
     //Set target
@@ -34,7 +34,6 @@ public class Character : GameUnit
     [SerializeField] private ShieldData[] shieldData;
     [SerializeField] private PantData[] pantData;
     [SerializeField] private FullsetData[] fullsetData;
-
     [SerializeField] public Transform headPosition;
     [SerializeField] public Transform backPosition;
     [SerializeField] public Transform shieldPosition;
@@ -45,28 +44,29 @@ public class Character : GameUnit
 
     //Character data
     public Rigidbody rb;
-    public float speed;
+    [HideInInspector] public float speed;
     [HideInInspector] public float attackIntervalTimer;
     [HideInInspector] public float attackInterval;
-    [HideInInspector] public int point;
+    public int point;
     [HideInInspector] private int pointToGrow;
     private Vector3 increaseSize = new Vector3(0.2f, 0.2f, 0.2f);
     public SphereCollider attackRangeCollider;
-    public float attackRangeRadius;
+    [HideInInspector] public float attackRangeRadius;
 
     //Weapons
-    public enum Weapon { Arrow, Hammer, Knife, Candy, Boomerang }
     public Weapon equipedWeapon;
-    [SerializeField] protected Transform firePoint;
+    [HideInInspector] public enum Weapon { Arrow, Hammer, Knife, Candy, Boomerang }
+    [SerializeField] public Transform firePoint;
     [SerializeField] protected GameObject weaponHolder;
     [SerializeField] protected WeaponData[] weaponsList;
-    public int currentWeapon;
-    public WeaponManager weaponInHand;
+    [HideInInspector] public int currentWeapon;
+    [HideInInspector] public WeaponManager weaponInHand;
 
     //Character action bool
     [HideInInspector] public bool isHit;
-    [HideInInspector] public bool isAttack;
     [HideInInspector] public bool isDead;
+    [HideInInspector] public bool isAttack;
+    [HideInInspector] public bool hasUlti;
 
     //Animation
     public Animator animator;
@@ -78,9 +78,9 @@ public class Character : GameUnit
     public RunState RunState = new();
     public PatrolState PatrolState = new();
     public AttackState AttackState = new();
+    public UltiState UltiState = new();
     public DeadState DeadState = new();
     public WinState WinState = new();
-
 
     public virtual void OnEnable()
     {
@@ -95,7 +95,6 @@ public class Character : GameUnit
         attackIntervalTimer = attackInterval;
         attackRangeRadius = attackRangeCollider.radius;
         isDead = false;
-        EquipWeapon((Weapon)PlayerPrefs.GetInt("currentWeaponIndex"));
         ChangeState(IdleState);
     }
 
@@ -116,8 +115,9 @@ public class Character : GameUnit
     public virtual void Patrol() { }
     public virtual void ResetPatrol() { }
     public virtual void StopPatrol() { }
-    public virtual void FindDirection() { }
+    public virtual void FindPosition() { }
     #endregion
+
     //===========Equip + Change Weapon==============
     #region Equip + Change Weapon
     public virtual void GetWeapon(int index)
@@ -128,7 +128,6 @@ public class Character : GameUnit
             {
                 Instantiate(weaponsList[i].model.gameObject, weaponHolder.transform);
                 weaponInHand = weaponsList[i].model;
-                weaponInHand.firePoint = firePoint;
             }
         }
     }
@@ -172,51 +171,76 @@ public class Character : GameUnit
         }
     }
     #endregion
+
     //===========Change Clothes==============
     #region Equip + Change Clothes
     public virtual void EquipHat(Hats hat, int hatIndex)
     {
+        if(PlayerPrefs.GetInt("fullset") >= 0)
+        {
+            EquipFullset(FullSets._default, 5); //default
+        }
         switch (hat)
         {
             case Hats.rau:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.crown:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.cowboy:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.ear:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.hat:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.hat_cap:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.hat_yellow:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.headPhone:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.arrow:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
             case Hats.horn:
                 ResetHead();
                 ChangeHat(hatIndex);
+                PlayerPrefs.SetInt("hat", hatIndex);
+                PlayerPrefs.Save();
                 break;
         }
     }
@@ -227,42 +251,52 @@ public class Character : GameUnit
             case Pants.batman:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.chambi:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.comy:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.dabao:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.onion:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.pokemon:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.rainbow:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.skull:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants.vantim:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
             case Pants._default:
                 ChangePants(pantIndex);
                 PlayerPrefs.SetInt("pant", pantIndex);
+                PlayerPrefs.Save();
                 break;
         }
     }
@@ -274,42 +308,50 @@ public class Character : GameUnit
                 ResetShield();
                 ChangeShield(shieldIndex);
                 PlayerPrefs.SetInt("shield", shieldIndex);
+                PlayerPrefs.Save();
                 break;
             case Shields.shield:
                 ResetShield();
                 ChangeShield(shieldIndex);
                 PlayerPrefs.SetInt("shield", shieldIndex);
+                PlayerPrefs.Save();
                 break;
         }
     }
     public void EquipFullset(FullSets fullset, int fullsetIndex)
     {
+        ResetAllClothes();
         switch (fullset)
         {
             case FullSets.devil:
-                ResetAllClothes();
                 ChangeSkin(fullsetIndex);
                 PlayerPrefs.SetInt("fullset", fullsetIndex);
+                PlayerPrefs.Save();
                 break;
             case FullSets.angel:
-                ResetAllClothes();
                 ChangeSkin(fullsetIndex);
-                PlayerPrefs.SetInt("shield", fullsetIndex);
+                PlayerPrefs.SetInt("fullset", fullsetIndex);
+                PlayerPrefs.Save();
                 break;
             case FullSets.witch:
-                ResetAllClothes();
                 ChangeSkin(fullsetIndex);
-                PlayerPrefs.SetInt("shield", fullsetIndex);
+                PlayerPrefs.SetInt("fullset", fullsetIndex);
+                PlayerPrefs.Save();
                 break;
             case FullSets.deadpool:
-                ResetAllClothes();
                 ChangeSkin(fullsetIndex);
-                PlayerPrefs.SetInt("shield", fullsetIndex);
+                PlayerPrefs.SetInt("fullset", fullsetIndex);
+                PlayerPrefs.Save();
                 break;
             case FullSets.thor:
-                ResetAllClothes();
                 ChangeSkin(fullsetIndex);
-                PlayerPrefs.SetInt("shield", fullsetIndex);
+                PlayerPrefs.SetInt("fullset", fullsetIndex);
+                PlayerPrefs.Save();
+                break;
+            case FullSets._default:
+                ChangeSkin(fullsetIndex);
+                PlayerPrefs.SetInt("fullset", fullsetIndex);
+                PlayerPrefs.Save();
                 break;
         }
     }
@@ -372,7 +414,6 @@ public class Character : GameUnit
     public virtual void ResetAllClothes()
     {
         ResetHead();
-        //default pants
         EquipPant(Pants._default, 9);
         ResetShield();
         ResetBack();
@@ -407,6 +448,7 @@ public class Character : GameUnit
         }
     }
     #endregion
+
     //===========Increase Size + Attack range==============
     #region Grow
     public virtual void IncreasePoint()
@@ -432,6 +474,7 @@ public class Character : GameUnit
 
     }
     #endregion
+
     //===========Attack==============
     #region Attack
     public virtual void CheckAroundCharacters() 
@@ -440,7 +483,14 @@ public class Character : GameUnit
         {
             currentTarget = Targets[0];
             isAttack = true;
-            ChangeState(AttackState);
+            if (hasUlti)
+            {
+                ChangeState(UltiState);
+            }
+            else
+            {
+                ChangeState(AttackState);
+            }
         }
     }
     public virtual void LookAtTarget()
@@ -456,8 +506,8 @@ public class Character : GameUnit
     public virtual void Attack()
     {
         targetDirection = currentTarget.transform.position - transform.position;
-        weaponHolder.SetActive(false);
         weaponInHand.Shoot(this, targetDirection);
+        weaponHolder.SetActive(false);
     }
     public virtual void ResetAttack()
     {
@@ -475,34 +525,48 @@ public class Character : GameUnit
     {
         weaponHolder.SetActive(true);
         isAttack = false;
-        Targets.Remove(currentTarget);
-        currentTarget = null;
+        Targets.Clear();
     }
+    #endregion
+
+    //===========GameOver==============
+    #region GameOver
+    public virtual void Win() { }
+    public virtual void Lose() { }
+    #endregion
+
+    //===========Die==============
+    #region Die
     public virtual void Hit()
     {
         isHit = true;
-        if(isHit)
+        if (isHit)
         {
             Die();
         }
     }
-    #endregion
-    //===========GameOver==============
-    #region GameOver
-    public virtual void Win() { }
-    #endregion
-    //===========Die==============
-    #region Die
-    public virtual async void Die()
+    public virtual void Die()
     {
         isDead = true;
-        Targets.Clear();
         ChangeState(DeadState);
-        await Task.Delay(TimeSpan.FromSeconds(1.5));
-        DespawnWhenDie();
+        Targets.Clear();
     }
     public override void OnDespawn() { }
     public virtual void DespawnWhenDie() { }
+    #endregion
+
+    //===========Ulti==============
+    #region Ulti Present
+    public virtual void ChestBoost()
+    {
+        hasUlti = true;
+    }
+    public virtual void Ulti()
+    {
+        targetDirection = currentTarget.transform.position - transform.position;
+        weaponInHand.Ulti(this, targetDirection);
+        weaponHolder.SetActive(false);
+    }
     #endregion
     //===========Animation==============
     public void ChangeAnim(string animName)

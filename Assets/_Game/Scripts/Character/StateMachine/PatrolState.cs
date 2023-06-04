@@ -7,7 +7,7 @@ public class PatrolState : IState
     public void OnEnter(Character character)
     {
         character.ChangeAnim(Constants.ANIM_RUN);
-        character.FindDirection();
+        character.FindPosition();
     }
     public void OnExecute(Character character)
     {

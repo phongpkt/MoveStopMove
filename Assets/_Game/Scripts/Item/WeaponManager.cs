@@ -5,13 +5,16 @@ using UnityEngine;
 public class WeaponManager : MonoBehaviour
 {
     public Projectile weaponPrefab;
-    public Transform firePoint;
     public WeaponData _Weapon;
-    public void Shoot(Character owner,Vector3 direction)
+    public void Shoot(Character owner, Vector3 direction)
     {
-        Projectile projectile = SimplePool.Spawn<Projectile>(weaponPrefab, firePoint.position, firePoint.rotation);
+        Projectile projectile = SimplePool.Spawn<Projectile>(weaponPrefab, owner.firePoint.position, owner.firePoint.rotation);
         projectile.OnInit(owner, direction, _Weapon);
     }
-
+    public void Ulti(Character owner, Vector3 direction)
+    {
+        Projectile projectile = SimplePool.Spawn<Projectile>(weaponPrefab, owner.firePoint.position, owner.firePoint.rotation);
+        projectile.OnInitUlti(owner, direction, _Weapon);
+    }
 
 }

@@ -7,7 +7,7 @@ public class CameraFollow : MonoBehaviour
     public Camera _camera;
     [SerializeField] Transform target;
 
-    private Vector3 menuPosition;
+    public static Vector3 menuPosition;
     public static Vector3 ingamePosition;
 
     private Quaternion menuRotation;

@@ -15,6 +15,6 @@ public class GameWinUIManager : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        SceneManager.LoadScene(0);
+        LevelManager.Instance.OnRetry();
     }
 }

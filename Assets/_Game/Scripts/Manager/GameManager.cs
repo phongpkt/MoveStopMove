@@ -7,14 +7,11 @@ public enum GameState { MainMenu, GamePlay, GameOver, GameWin, GamePause }
 public class GameManager : Singleton<GameManager>
 {
     private GameState gameState;
-
     public void ChangeState(GameState state)
     {
         this.gameState = state;
     }
-
     public bool IsState(GameState state) => state == this.gameState;
-
 
     public int goldPerStage;
     public int totalPlayerGold;
@@ -24,14 +21,10 @@ public class GameManager : Singleton<GameManager>
         goldPerStage = 0;
         gameState = GameState.MainMenu;
     }
-    public void IncreaseGoldWhenKill()
+    public void GetGoldAfterStage(int point)
     {
-        goldPerStage += Constants.GOLD_PER_KILL;
-    }
-
-    public void GetGoldAfterStage()
-    {
-        goldPerStage += Constants.GOLD_PER_LEVEL;
+        int total = Constants.GOLD_PER_KILL * point;
+        goldPerStage = goldPerStage + total + Constants.GOLD_PER_LEVEL;
         totalPlayerGold += goldPerStage;
         SaveGold();
     }

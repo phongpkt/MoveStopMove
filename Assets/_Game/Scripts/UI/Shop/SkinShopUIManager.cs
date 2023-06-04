@@ -75,53 +75,33 @@ public class SkinShopUIManager : MonoBehaviour
         {
             case 0:
                 player.EquipHat(Hats.rau, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save();
                 break;
             case 1:
                 player.EquipHat(Hats.crown, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save();
                 break;
             case 2:
                 player.EquipHat(Hats.cowboy, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save();
                 break;
             case 3:
                 player.EquipHat(Hats.ear, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save();
                 break;
             case 4:
                 player.EquipHat(Hats.hat, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save(); 
                 break;
             case 5:
                 player.EquipHat(Hats.hat_cap, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save(); 
                 break;
             case 6:
                 player.EquipHat(Hats.hat_yellow, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save(); 
                 break;
             case 7:
                 player.EquipHat(Hats.headPhone, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save(); 
                 break;
             case 8:
                 player.EquipHat(Hats.arrow, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save(); 
                 break;
             case 9:
                 player.EquipHat(Hats.horn, _index);
-                PlayerPrefs.SetInt("hat", _index);
-                PlayerPrefs.Save(); 
                 break;
         }
     }
@@ -142,7 +122,7 @@ public class SkinShopUIManager : MonoBehaviour
                 player.EquipPant(Pants.dabao, _index);
                 break;
             case 4:
-                player.EquipPant(Pants.onion, _index); 
+                player.EquipPant(Pants.onion, _index);
                 break;
             case 5:
                 player.EquipPant(Pants.pokemon, _index);

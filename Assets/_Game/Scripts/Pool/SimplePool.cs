@@ -329,5 +329,6 @@ public enum PoolType
     Player,
     Bot,
     Bullet,
-    Indicator
+    Indicator,
+    Chest
 }

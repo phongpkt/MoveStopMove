@@ -13,11 +13,12 @@ public class GameOverUIManager : MonoBehaviour
     private void OnEnable()
     {
         //killerName.SetText(player.currentAttacker.characterName.ToString());
-        ranking.SetText((LevelManager.Instance.enemyCounter.Count + 1).ToString() + "/" + (LevelManager.Instance.totalBotAmount + 1).ToString());
+        ranking.SetText((LevelManager.Instance.totalBotAmount + 1).ToString() + "/" + (LevelManager.Instance.total + 1).ToString());
         gold.SetText("Get: " + GameManager.Instance.goldPerStage.ToString());
     }
     public void ReturnToMenu()
     {
-        SceneManager.LoadScene(0);
+        LevelManager.Instance.OnRetry();
+        this.gameObject.SetActive(false);
     }
 }
