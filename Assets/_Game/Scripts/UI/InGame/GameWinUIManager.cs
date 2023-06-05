@@ -16,5 +16,6 @@ public class GameWinUIManager : MonoBehaviour
     public void ReturnToMenu()
     {
         LevelManager.Instance.OnRetry();
+        this.gameObject.SetActive(false);
     }
 }

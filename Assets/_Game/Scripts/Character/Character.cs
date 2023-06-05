@@ -556,16 +556,19 @@ public class Character : GameUnit
     #endregion
 
     //===========Ulti==============
-    #region Ulti Present
+    #region Ulti Chest
     public virtual void ChestBoost()
     {
         hasUlti = true;
     }
     public virtual void Ulti()
     {
-        targetDirection = currentTarget.transform.position - transform.position;
-        weaponInHand.Ulti(this, targetDirection);
-        weaponHolder.SetActive(false);
+        if(hasUlti)
+        {
+            targetDirection = currentTarget.transform.position - transform.position;
+            weaponInHand.Ulti(this, targetDirection);
+            weaponHolder.SetActive(false);
+        }
     }
     #endregion
     //===========Animation==============

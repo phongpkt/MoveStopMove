@@ -27,16 +27,17 @@ public class LevelManager : Singleton<LevelManager>
     private int zPos;
     
     //Chest
-    public List<Chest> chestCounter = new List<Chest>();
+    public List<ChestUlti> chestUltiCounter = new List<ChestUlti>();
+    public List<ChestSpeed> chestSpeedCounter = new List<ChestSpeed>();
     private int totalChestOnMap;
-    private float spawnChestTime = 3f;
+    private float spawnChestTime = 5f;
     private float spawnChestTimer;
 
     private void Awake()
     {
         totalChestOnMap = 3;
-        totalBotAmount = 1;
-        totalBotOnMap = 1;
+        totalBotAmount = 15;
+        totalBotOnMap = 10;
         total = totalBotAmount;
         spawnChestTimer = spawnChestTime;
     }
@@ -81,7 +82,7 @@ public class LevelManager : Singleton<LevelManager>
         //reset game
         SimplePool.CollectAll();
         enemyCounter.Clear();
-        chestCounter.Clear();
+        chestUltiCounter.Clear();
         //reset player
         playerTf.position = new Vector3(0, 0, -5f);
         playerTf.rotation = Quaternion.Euler(0f, 180f, 0f);
@@ -125,7 +126,7 @@ public class LevelManager : Singleton<LevelManager>
         //check game
         OnFinishGame();
     }
-    private void SpawnChest()
+    private void SpawnUltiChest()
     {
         xPos = Random.Range(-50, 50);
         zPos = Random.Range(-50, 50);
@@ -134,17 +135,29 @@ public class LevelManager : Singleton<LevelManager>
         NavMeshHit closestHit;
         NavMesh.SamplePosition(position, out closestHit, 180f, NavMesh.AllAreas);
         randomChestPosition = closestHit.position;
-        Chest chest = SimplePool.Spawn<Chest>(PoolType.Chest, randomChestPosition, Quaternion.identity);
-        chestCounter.Add(chest);
+        ChestUlti ulti = SimplePool.Spawn<ChestUlti>(PoolType.Ulti, randomChestPosition, Quaternion.identity);
+        chestUltiCounter.Add(ulti);
+    }
+    private void SpawnSpeedChest()
+    {
+        xPos = Random.Range(-50, 50);
+        zPos = Random.Range(-50, 50);
+        position = new Vector3(xPos, 0, zPos);
+
+        NavMeshHit closestHit;
+        NavMesh.SamplePosition(position, out closestHit, 180f, NavMesh.AllAreas);
+        randomChestPosition = closestHit.position;
+        ChestSpeed speed = SimplePool.Spawn<ChestSpeed>(PoolType.Speed, randomChestPosition, Quaternion.identity);
+        chestSpeedCounter.Add(speed);
     }
     private void CheckNumberOfChest()
     {
-        if (chestCounter.Count < totalChestOnMap)
+        if (chestUltiCounter.Count < totalChestOnMap)
         {
             spawnChestTimer -= Time.deltaTime;
             if (spawnChestTimer <= 0)
             {
-                SpawnChest();
+                SpawnUltiChest();
                 spawnChestTimer = spawnChestTime;
             }
         }

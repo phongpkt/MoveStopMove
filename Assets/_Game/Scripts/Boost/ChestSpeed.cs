@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class Chest : GameUnit
+public class ChestSpeed : GameUnit
 {
     private void OnTriggerEnter(Collider other)
     {
@@ -15,7 +14,7 @@ public class Chest : GameUnit
                 character.ChestBoost();
             }
             SimplePool.Despawn(this);
-            LevelManager.Instance.chestCounter.Remove(this);
+            LevelManager.Instance.chestSpeedCounter.Remove(this);
         }
     }
 }
