@@ -10,6 +10,9 @@ public class Player : Character
     [SerializeField] private GameObject victoryUI;
     [SerializeField] private GameObject loseUI;
 
+    [SerializeField] private AudioController audioController;
+
+
     private float horizontal;
     private float vertical;
     private Vector3 direction;
@@ -17,7 +20,7 @@ public class Player : Character
     public static Character target;
     public override void OnInit()
     {
-        inGameCanvas.SetActive(false);
+        //inGameCanvas.SetActive(false);
         DataManager();
         rb.velocity = Vector3.zero;
         base.OnInit();
@@ -57,6 +60,11 @@ public class Player : Character
     {
         Moving();
     }
+    public override void Attack()
+    {
+        base.Attack();
+        audioController.PlayWhenAttack();
+    }
     public override void Win()
     {
         if(GameManager.Instance.IsState(GameState.GameWin))
@@ -65,15 +73,14 @@ public class Player : Character
             ChangeState(WinState);
             GameManager.Instance.GetGoldAfterStage(point);
             victoryUI.SetActive(true);
+            audioController.PlayWhenWin();
         }
     }
     public override void Hit()
     {
         base.Hit();
-        if (isHit)
-        {
-            CloseUI();
-        }
+        CloseUI();
+        audioController.PLayWhenHit();
     }
     public override async void Die()
     {
@@ -89,6 +96,7 @@ public class Player : Character
         {
             GameManager.Instance.GetGoldAfterStage(point);
             loseUI.SetActive(true);
+            audioController.PLayWhenLose();
         }
     }
     private void CloseUI()

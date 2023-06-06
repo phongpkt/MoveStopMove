@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class InGameUIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject PauseUI;
+    [SerializeField] private GameObject _joystick;
     [SerializeField] private Player player;
     [SerializeField] private TMP_Text playerName;
     [SerializeField] private TMP_Text pointText;
@@ -21,5 +23,9 @@ public class InGameUIManager : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+    public void PauseGame()
+    {
+        PauseUI.SetActive(true);
     }
 }
