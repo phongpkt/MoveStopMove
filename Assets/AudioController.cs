@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioController : MonoBehaviour
+public class AudioController : Singleton<AudioController>
 {
-    [SerializeField] private Character player;
-
     //GamePlay
+    [SerializeField] private AudioSource backgroundSource;
     [SerializeField] private AudioSource dieSource;
     [SerializeField] private AudioSource loseSource;
     [SerializeField] private AudioSource winSource;
@@ -14,7 +13,11 @@ public class AudioController : MonoBehaviour
 
     //UI
     [SerializeField] private AudioSource btn_ClickSource;
-
+    
+    public void PlayOnStart()
+    {
+        backgroundSource.Play();
+    }
     public void PlayWhenAttack()
     {
         attackSource.Play();

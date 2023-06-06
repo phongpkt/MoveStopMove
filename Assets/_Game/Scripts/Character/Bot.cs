@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -15,7 +17,7 @@ public class Bot : Character
     public enum EnemyName { Mitchell, Roy, Parker, Steve, Barnes, Washington, Walker, Michael, Jackson, Patterson, Griffin, Thomas, Ramirez, Bryant, Young }
     public EnemyName b_name;
     [SerializeField] private CharacterSkinData characterSkinData;
-    [SerializeField] private List<Material> assignedSkin;
+    private List<Material> assignedSkin;
 
     public GameObject targetCircle;
     public Indicator wayPointIndicator;
@@ -24,12 +26,14 @@ public class Bot : Character
     [SerializeField] private float sphereRadius = 50f;
     private Vector3 pos;
 
+    [SerializeField] private GameObject hitParticle;
+
     private float idleTimeCounter;
     private float idleTime;
     private float patrolTime;
+    private CancellationToken cancellationToken;
 
     public UnityAction<Bot> deathAction;
-
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -48,6 +52,7 @@ public class Bot : Character
         {
             IncreasePoint();
         }
+        hitParticle.SetActive(false);
     }
     public override void Update()
     {
@@ -120,10 +125,15 @@ public class Bot : Character
     #endregion
     //===========Die==============
     #region Die
+    public override void Hit()
+    {
+        base.Hit();
+        hitParticle.SetActive(true);
+    }
     public override async void Die()
     {
         base.Die();
-        await Task.Delay(TimeSpan.FromSeconds(1.5));
+        await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
         DespawnWhenDie();
     }
     public override void OnDespawn()

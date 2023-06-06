@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState { MainMenu, GamePlay, GameOver, GameWin, GamePause }
+public enum GameState { MainMenu, GamePlay, GameOver, GameWin }
 
 public class GameManager : Singleton<GameManager>
 {
@@ -17,7 +17,7 @@ public class GameManager : Singleton<GameManager>
     public int totalPlayerGold;
     private void Awake()
     {
-        totalPlayerGold = PlayerPrefs.GetInt("totalPlayerGold", 100000);
+        totalPlayerGold = PlayerPrefs.GetInt("totalPlayerGold", 0);
         goldPerStage = 0;
         gameState = GameState.MainMenu;
     }
@@ -28,7 +28,6 @@ public class GameManager : Singleton<GameManager>
         totalPlayerGold += goldPerStage;
         SaveGold();
     }
-
     public void SaveGold()
     {
         PlayerPrefs.SetInt("totalPlayerGold", totalPlayerGold);

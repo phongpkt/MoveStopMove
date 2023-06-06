@@ -20,6 +20,13 @@ public class MainMenuUIManager : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private TMP_InputField playerName;
     [SerializeField] private GameObject playerNameIPF;
+
+    [SerializeField] private GameObject soundOn;
+    [SerializeField] private GameObject audioController;
+    [SerializeField] private GameObject soundOff;
+    [SerializeField] private GameObject rumbleOn;
+    [SerializeField] private GameObject rumbleOff;
+
     private void OnEnable()
     {
         _joystick.SetActive(false);
@@ -59,7 +66,6 @@ public class MainMenuUIManager : MonoBehaviour
         skinShop.SetActive(true);
         CloseMainMenu();
     }
-
     public void PressPlayButton()
     {
         _joystick.SetActive(true);
@@ -67,6 +73,28 @@ public class MainMenuUIManager : MonoBehaviour
         LevelManager.Instance.OnPlay();
         StartCoroutine(OpenInGameUI());
         CloseMainMenu();
+    }
+    public void TurnSoundOff()
+    {
+        soundOn.SetActive(false);
+        audioController.SetActive(false);
+        soundOff.SetActive(true);
+    }
+    public void TurnSoundOn()
+    {
+        soundOn.SetActive(true);
+        audioController.SetActive(true);
+        soundOff.SetActive(false);
+    }
+    public void TurnRumbleOff()
+    {
+        rumbleOn.SetActive(false);
+        rumbleOff.SetActive(true);
+    }
+    public void TurnRumbleOn()
+    {
+        rumbleOn.SetActive(true);
+        rumbleOff.SetActive(false);
     }
     IEnumerator OpenInGameUI()
     {

@@ -11,16 +11,19 @@ public class GamePauseUIManager : MonoBehaviour
     {
         _joystick.SetActive(false);
     }
+    private void OnDisable()
+    {
+        _joystick.SetActive(true);
+    }
     public void ContinueGame()
     {
         gameObject.SetActive(false);
         inGameUI.SetActive(true);
-        _joystick.SetActive(true);
     }
     public void ReturnToHome()
     {
         inGameUI.SetActive(false);
-        this.gameObject.SetActive(false);
         LevelManager.Instance.OnRetry();
+        this.gameObject.SetActive(false);
     }
 }

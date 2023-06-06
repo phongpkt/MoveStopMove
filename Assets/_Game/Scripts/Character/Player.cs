@@ -4,23 +4,18 @@ using UnityEngine;
 
 public class Player : Character
 {
-    [SerializeField] protected GameObject inGameCanvas;
     [SerializeField] private GameObject _joystick;
     [SerializeField] private FloatingJoystick joystick;
     [SerializeField] private GameObject victoryUI;
     [SerializeField] private GameObject loseUI;
 
-    [SerializeField] private AudioController audioController;
-
-
     private float horizontal;
     private float vertical;
     private Vector3 direction;
     
-    public static Character target;
+    [HideInInspector] public static Character target;
     public override void OnInit()
     {
-        //inGameCanvas.SetActive(false);
         DataManager();
         rb.velocity = Vector3.zero;
         base.OnInit();
@@ -33,14 +28,11 @@ public class Player : Character
         EquipWeapon(equipedWeapon);
         int currentHat = PlayerPrefs.GetInt("hat");
         int currentPant = PlayerPrefs.GetInt("pant");
-        //TODO: shield luon bi spawn khi mo game
-        //int currentShield = PlayerPrefs.GetInt("shield");
         int currentSkin = PlayerPrefs.GetInt("fullset");
-        if(currentSkin == 5) //default skin
+        if(currentSkin == 5)
         {
             EquipHat((Hats)currentHat, currentHat);
             EquipPant((Pants)currentPant, currentPant);
-            //EquipShield((Shields)currentShield, currentShield);
         }
         else
         {
@@ -49,10 +41,6 @@ public class Player : Character
     }
     public override void Update()
     {
-        if (GameManager.Instance.IsState(GameState.GamePlay))
-        {
-            inGameCanvas.SetActive(true);
-        }
         base.Update();
         target = Targets.Count > 0 ? Targets[0] : null;
     }
@@ -63,7 +51,7 @@ public class Player : Character
     public override void Attack()
     {
         base.Attack();
-        audioController.PlayWhenAttack();
+        AudioController.Instance.PlayWhenAttack();
     }
     public override void Win()
     {
@@ -73,14 +61,13 @@ public class Player : Character
             ChangeState(WinState);
             GameManager.Instance.GetGoldAfterStage(point);
             victoryUI.SetActive(true);
-            audioController.PlayWhenWin();
+            AudioController.Instance.PlayWhenWin();
         }
     }
     public override void Hit()
     {
         base.Hit();
         CloseUI();
-        audioController.PLayWhenHit();
     }
     public override async void Die()
     {
@@ -96,12 +83,13 @@ public class Player : Character
         {
             GameManager.Instance.GetGoldAfterStage(point);
             loseUI.SetActive(true);
-            audioController.PLayWhenLose();
+            AudioController.Instance.PLayWhenLose();
         }
     }
     private void CloseUI()
     {
         _joystick.SetActive(false);
+        joystick.input = Vector2.zero;
     }
     public override void Moving()
     {

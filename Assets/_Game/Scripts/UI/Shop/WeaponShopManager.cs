@@ -39,6 +39,14 @@ public class WeaponShopManager : MonoBehaviour
     public void ChangeWeaponUI(int _index)
     {
         currentWeaponIndex += _index;
+        if(currentWeaponIndex > 4)
+        {
+            currentWeaponIndex = 4;
+        }
+        if (currentWeaponIndex < 0)
+        {
+            currentWeaponIndex = 0;
+        }
         switch (currentWeaponIndex)
         {
             case 0:

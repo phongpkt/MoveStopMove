@@ -21,13 +21,12 @@ public class Projectile : GameUnit
         }
         if (_Owner.hasUlti)
         {
-            transform.localScale += ulti * Time.deltaTime * 2.5f;
+            transform.localScale += ulti * Time.deltaTime * 2f;
         }
     }
     public void OnInit(Character owner, Vector3 direction, WeaponData weapon)
     {
         _Owner = owner;
-        //Remind: chinh phan nay de game de thang hon
         range = owner.attackRangeRadius - 6.5f;
         bulletSpeed = weapon.speed - 0.1f;
         rb.velocity = direction * bulletSpeed;
@@ -38,7 +37,7 @@ public class Projectile : GameUnit
         //reset scale vu khi
         transform.localScale = new Vector3(1f, 1f, 1f);
         range = owner.attackRangeRadius - 5.5f;
-        bulletSpeed = weapon.speed - 0.3f;
+        bulletSpeed = weapon.speed - 0.1f;
         rb.velocity = direction * bulletSpeed;
     }   
     private void OnTriggerEnter(Collider other)
@@ -49,6 +48,7 @@ public class Projectile : GameUnit
             if(target != _Owner)
             {
                 OnDespawn();
+                target.GetAttacker(_Owner);
                 target.Hit();
                 _Owner.IncreasePoint();
             }

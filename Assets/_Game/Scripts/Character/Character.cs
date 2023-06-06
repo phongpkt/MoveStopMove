@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using static Character;
@@ -17,11 +18,9 @@ public enum FullSets { devil, angel, witch, deadpool, thor, _default};
 public class Character : GameUnit
 {
     //Set target
-    public List<Character> Targets = new List<Character>();
+    [HideInInspector] public List<Character> Targets = new List<Character>();
     [HideInInspector] public Character currentTarget;
     private Vector3 targetDirection;
-
-    //UI
     [HideInInspector] public Character currentAttacker;
     [HideInInspector] public string characterName;
 
@@ -47,7 +46,7 @@ public class Character : GameUnit
     [HideInInspector] public float speed;
     [HideInInspector] public float attackIntervalTimer;
     [HideInInspector] public float attackInterval;
-    public int point;
+    [HideInInspector] public int point;
     [HideInInspector] private int pointToGrow;
     private Vector3 increaseSize = new Vector3(0.2f, 0.2f, 0.2f);
     public SphereCollider attackRangeCollider;
@@ -525,7 +524,7 @@ public class Character : GameUnit
     {
         weaponHolder.SetActive(true);
         isAttack = false;
-        Targets.Clear();
+        currentTarget = null;
     }
     #endregion
 
@@ -544,6 +543,11 @@ public class Character : GameUnit
         {
             Die();
         }
+        if (currentAttacker.Targets.Contains(this))
+        {
+            currentAttacker.Targets.Remove(this);
+        }
+        AudioController.Instance.PLayWhenHit();
     }
     public virtual void Die()
     {
@@ -552,6 +556,10 @@ public class Character : GameUnit
         Targets.Clear();
     }
     public override void OnDespawn() { }
+    public virtual void GetAttacker(Character attacker)
+    {
+        currentAttacker = attacker;
+    }
     public virtual void DespawnWhenDie() { }
     #endregion
 

@@ -21,7 +21,6 @@ public class SetTarget : MonoBehaviour
     {
         if (col.CompareTag(Constants.CHARACTER_TAG))
         {
-            //Character target = col.GetComponent<Character>();
             Character target = Cache.GetCharacter(col);
             if (target != Owner)
             {
