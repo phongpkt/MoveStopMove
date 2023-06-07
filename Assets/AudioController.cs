@@ -18,6 +18,10 @@ public class AudioController : Singleton<AudioController>
     {
         backgroundSource.Play();
     }
+    public void StopBackgroundMusic()
+    {
+        backgroundSource.Stop();
+    }
     public void PlayWhenAttack()
     {
         attackSource.Play();

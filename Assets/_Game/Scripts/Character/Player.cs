@@ -81,6 +81,7 @@ public class Player : Character
         this.gameObject.SetActive(false);
         if(GameManager.Instance.IsState(GameState.GameOver))
         {
+            AudioController.Instance.StopBackgroundMusic();
             GameManager.Instance.GetGoldAfterStage(point);
             loseUI.SetActive(true);
             AudioController.Instance.PLayWhenLose();

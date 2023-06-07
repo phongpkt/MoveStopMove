@@ -35,11 +35,7 @@ public class LevelManager : Singleton<LevelManager>
 
     private void Awake()
     {
-        totalChestOnMap = 3;
-        totalBotAmount = 10;
-        totalBotOnMap = 10;
-        total = totalBotAmount;
-        spawnChestTimer = spawnChestTime;
+        LevelData();
     }
     private void Update()
     {
@@ -47,6 +43,14 @@ public class LevelManager : Singleton<LevelManager>
         {
             CheckNumberOfChest();
         }
+    }
+    private void LevelData()
+    {
+        totalChestOnMap = 3;
+        totalBotAmount = 50;
+        totalBotOnMap = 10;
+        total = totalBotAmount;
+        spawnChestTimer = spawnChestTime;
     }
     public void OnFinishGame()
     {
@@ -84,8 +88,7 @@ public class LevelManager : Singleton<LevelManager>
         SimplePool.CollectAll();
         enemyCounter.Clear();
         chestUltiCounter.Clear();
-        totalBotAmount = 10;
-        total = totalBotAmount;
+        LevelData();
         GameManager.Instance.ChangeState(GameState.MainMenu);
         //reset player
         playerTf.position = new Vector3(0, 0, -5f);
@@ -168,6 +171,9 @@ public class LevelManager : Singleton<LevelManager>
     }
     private void PlayAudio()
     {
-        AudioController.Instance.PlayOnStart();
+        if (GameManager.Instance.IsState(GameState.GamePlay))
+        {
+            AudioController.Instance.PlayOnStart();
+        }
     }
 }

@@ -18,12 +18,13 @@ public enum FullSets { devil, angel, witch, deadpool, thor, _default};
 public class Character : GameUnit
 {
     //Set target
-    [HideInInspector] public List<Character> Targets = new List<Character>();
-    [HideInInspector] public Character currentTarget;
+    public List<Character> Targets = new List<Character>();
+    public Character currentTarget;
     private Vector3 targetDirection;
     [HideInInspector] public Character currentAttacker;
     [HideInInspector] public string characterName;
-
+    [SerializeField] private GameObject setTargetCircle;
+    
     //Skin
     [HideInInspector] public Hats hat;
     [HideInInspector] public Pants pant;
@@ -94,6 +95,8 @@ public class Character : GameUnit
         attackIntervalTimer = attackInterval;
         attackRangeRadius = attackRangeCollider.radius;
         isDead = false;
+        setTargetCircle.SetActive(true);
+        Targets.Clear();
         ChangeState(IdleState);
     }
 
@@ -552,6 +555,7 @@ public class Character : GameUnit
     public virtual void Die()
     {
         isDead = true;
+        setTargetCircle.SetActive(false);
         ChangeState(DeadState);
         Targets.Clear();
     }

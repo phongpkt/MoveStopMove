@@ -31,7 +31,9 @@ public class Bot : Character
     private float idleTimeCounter;
     private float idleTime;
     private float patrolTime;
-    private CancellationToken cancellationToken;
+
+    private static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    private CancellationToken cancellationToken = cancellationTokenSource.Token;
 
     public UnityAction<Bot> deathAction;
     private void Awake()
@@ -53,6 +55,10 @@ public class Bot : Character
             IncreasePoint();
         }
         hitParticle.SetActive(false);
+    }
+    private void OnDestroy()
+    {
+        cancellationTokenSource.Cancel();
     }
     public override void Update()
     {
@@ -121,6 +127,7 @@ public class Bot : Character
     public override void StopPatrol()
     {
         agent.isStopped = true;
+        agent.velocity = Vector3.zero;
     }
     #endregion
     //===========Die==============
@@ -163,12 +170,7 @@ public class Bot : Character
     {
         if (assignedSkin == null)
             assignedSkin = new List<Material>();
-
-        if (assignedSkin.Count >= characterSkinData.skinColor.Count)
-        {
-            Debug.Log("All available color have been assigned.");
-        }
-
+        
         int randomIndex = UnityEngine.Random.Range(0, characterSkinData.skinColor.Count);
         Material randomSkin = characterSkinData.skinColor[randomIndex];
         assignedSkin.Add(randomSkin);

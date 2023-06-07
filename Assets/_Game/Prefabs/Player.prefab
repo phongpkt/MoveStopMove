@@ -1596,6 +1596,7 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   currentAttacker: {fileID: 0}
   characterName: 
+  setTargetCircle: {fileID: 1656104390932039053}
   hat: 0
   pant: 0
   shield: 0

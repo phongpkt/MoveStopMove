@@ -6583,6 +6583,7 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   currentAttacker: {fileID: 0}
   characterName: 
+  setTargetCircle: {fileID: 2718369271090411024}
   hat: 0
   pant: 0
   shield: 0
@@ -6654,7 +6655,6 @@ MonoBehaviour:
   agent: {fileID: 6518860658547487682}
   sphereRadius: 50
   hitParticle: {fileID: 3164262742123918047}
-  player: {fileID: 4832712000062185211, guid: 463bb5c9adfc96241996c7f5b3a01eff, type: 3}
 --- !u!195 &6518860658547487682
 NavMeshAgent:
   m_ObjectHideFlags: 0
