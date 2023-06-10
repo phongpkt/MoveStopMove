@@ -1,4 +1,8 @@
-UI:
+> Manager:
+- GameManager: gameState, ChangeState, IsState
+- LevelManager: map, bot, kiểm tra win hoặc lose, hòm gift
+- AudioController: Sounds
+> UI: 
 - Mainmenu
   + Nút skin, weapon Shop
   + Số vàng của người chơi có
